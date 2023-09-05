@@ -3,9 +3,10 @@ test.object ("cron.fields.Month")
         .given ("*")
         .expectingResultJsonToBe (`
         {
-          "expr": "1-12",
+          "expr": "*",
           "items": [
             {
+              "field": null,
               "expr": "1-12",
               "from": 1,
               "to": 12,
@@ -36,6 +37,7 @@ test.object ("cron.fields.Month")
           "expr": "1-6/1,7/2",
           "items": [
             {
+              "field": null,
               "expr": "1-6/1",
               "from": 1,
               "to": 6,
@@ -50,6 +52,7 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "7-12/2",
               "from": 7,
               "to": 12,
@@ -72,6 +75,7 @@ test.object ("cron.fields.Month")
           "expr": "Jan,mar,JUN",
           "items": [
             {
+              "field": null,
               "expr": "1",
               "from": 1,
               "to": 1,
@@ -81,6 +85,7 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "3",
               "from": 3,
               "to": 3,
@@ -90,6 +95,7 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "6",
               "from": 6,
               "to": 6,
@@ -110,6 +116,7 @@ test.object ("cron.fields.Month")
           "expr": "Jan-may/1,JUN/2",
           "items": [
             {
+              "field": null,
               "expr": "1-5/1",
               "from": 1,
               "to": 5,
@@ -123,6 +130,7 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "6-12/2",
               "from": 6,
               "to": 12,
@@ -146,6 +154,7 @@ test.object ("cron.fields.Month")
           "expr": "Jan-mar,JUN/2",
           "items": [
             {
+              "field": null,
               "expr": "1-3",
               "from": 1,
               "to": 3,
@@ -157,6 +166,7 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "6-12/2",
               "from": 6,
               "to": 12,
@@ -202,4 +212,27 @@ test.object ("cron.fields.Month")
         .throws ("error.interval_out_of_range")
         .commit ()
 
+;
+
+
+test.method ("cron.fields.Month", "getValueForDate")
+    .should ("return the date value from a date")
+        .given (nit.parseDate ("2023-03-05 13:24:35"))
+        .returns (3)
+        .commit ()
+;
+
+
+test.method ("cron.fields.Month", "forward")
+    .should ("increment the dates by the given value")
+        .given (nit.parseDate ("2023-03-05 13:24:35"), 10)
+        .returns ()
+        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2024)
+        .expectingMethodToReturnValue ("args.0.getMonth", null, 0)
+        .expectingMethodToReturnValue ("args.0.getDate", null, 1)
+        .expectingMethodToReturnValue ("args.0.getHours", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMinutes", null, 0)
+        .expectingMethodToReturnValue ("args.0.getSeconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
+        .commit ()
 ;

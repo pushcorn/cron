@@ -3,9 +3,10 @@ test.object ("cron.fields.DayOfMonth")
         .given ("*")
         .expectingResultJsonToBe (`
         {
-          "expr": "1-31",
+          "expr": "*",
           "items": [
             {
+              "field": null,
               "expr": "1-31",
               "from": 1,
               "to": 31,
@@ -55,6 +56,7 @@ test.object ("cron.fields.DayOfMonth")
           "expr": "1-20/5,21/4",
           "items": [
             {
+              "field": null,
               "expr": "1-20/5",
               "from": 1,
               "to": 20,
@@ -67,6 +69,7 @@ test.object ("cron.fields.DayOfMonth")
               "interval": 5
             },
             {
+              "field": null,
               "expr": "21-31/4",
               "from": 21,
               "to": 31,
@@ -101,5 +104,45 @@ test.object ("cron.fields.DayOfMonth")
 
     .given ("31-2")
         .throws ("error.min_value_greater_than_max_value")
+        .commit ()
+;
+
+
+test.method ("cron.fields.DayOfMonth", "getValueForDate")
+    .should ("return the date value from a date")
+        .given (nit.parseDate ("2023-03-05"))
+        .returns (5)
+        .commit ()
+
+    .should ("use today's date if no date was given")
+        .given ()
+        .returns (new Date ().getDate ())
+        .commit ()
+;
+
+
+test.method ("cron.fields.DayOfMonth", "forward")
+    .should ("increment the dates by the given value")
+        .given (nit.parseDate ("2023-03-05 13:24:35"), 10)
+        .returns ()
+        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2023)
+        .expectingMethodToReturnValue ("args.0.getMonth", null, 2)
+        .expectingMethodToReturnValue ("args.0.getDate", null, 15)
+        .expectingMethodToReturnValue ("args.0.getHours", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMinutes", null, 0)
+        .expectingMethodToReturnValue ("args.0.getSeconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
+        .commit ()
+
+    .should ("increment the one day if no value was given")
+        .given (nit.parseDate ("2023-03-05 13:24:35"))
+        .returns ()
+        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2023)
+        .expectingMethodToReturnValue ("args.0.getMonth", null, 2)
+        .expectingMethodToReturnValue ("args.0.getDate", null, 6)
+        .expectingMethodToReturnValue ("args.0.getHours", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMinutes", null, 0)
+        .expectingMethodToReturnValue ("args.0.getSeconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
         .commit ()
 ;

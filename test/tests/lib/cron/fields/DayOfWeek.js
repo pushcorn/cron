@@ -3,9 +3,10 @@ test.object ("cron.fields.DayOfWeek")
         .given ("*")
         .expectingResultJsonToBe (`
         {
-          "expr": "0-6",
+          "expr": "*",
           "items": [
             {
+              "field": null,
               "expr": "0-6",
               "from": 0,
               "to": 6,
@@ -31,6 +32,7 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "1-3/5,4/4",
           "items": [
             {
+              "field": null,
               "expr": "1-3/5",
               "from": 1,
               "to": 3,
@@ -40,6 +42,7 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 5
             },
             {
+              "field": null,
               "expr": "4-6/4",
               "from": 4,
               "to": 6,
@@ -60,6 +63,7 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "mon,wed,fri",
           "items": [
             {
+              "field": null,
               "expr": "1",
               "from": 1,
               "to": 1,
@@ -69,6 +73,7 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "3",
               "from": 3,
               "to": 3,
@@ -78,6 +83,7 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "5",
               "from": 5,
               "to": 5,
@@ -98,6 +104,7 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "mon-Wed/1,Thu/2",
           "items": [
             {
+              "field": null,
               "expr": "1-3/1",
               "from": 1,
               "to": 3,
@@ -109,6 +116,7 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "4-6/2",
               "from": 4,
               "to": 6,
@@ -130,6 +138,7 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "sun-wed,fri/2,tue-thu",
           "items": [
             {
+              "field": null,
               "expr": "0-3",
               "from": 0,
               "to": 3,
@@ -142,6 +151,7 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
+              "field": null,
               "expr": "5-6/2",
               "from": 5,
               "to": 6,
@@ -151,6 +161,7 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 2
             },
             {
+              "field": null,
               "expr": "2-4",
               "from": 2,
               "to": 4,
@@ -166,7 +177,6 @@ test.object ("cron.fields.DayOfWeek")
         `)
         .expectingPropertyToBe ("result.values", [0, 1, 2, 3, 4, 5])
         .commit ()
-
 ;
 
 
@@ -190,5 +200,28 @@ test.object ("cron.fields.DayOfWeek")
 
     .given ("mon-fri/10")
         .throws ("error.interval_out_of_range")
+        .commit ()
+;
+
+
+test.method ("cron.fields.DayOfWeek", "getValueForDate")
+    .should ("return the week day value from a date")
+        .given (nit.parseDate ("2023-03-05"))
+        .returns (0)
+        .commit ()
+;
+
+
+test.method ("cron.fields.DayOfWeek", "forward")
+    .should ("increment the dates by the given value")
+        .given (nit.parseDate ("2023-03-05 13:24:35"), 10)
+        .returns ()
+        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2023)
+        .expectingMethodToReturnValue ("args.0.getMonth", null, 2)
+        .expectingMethodToReturnValue ("args.0.getDate", null, 15)
+        .expectingMethodToReturnValue ("args.0.getHours", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMinutes", null, 0)
+        .expectingMethodToReturnValue ("args.0.getSeconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
         .commit ()
 ;

@@ -1,4 +1,5 @@
 nit.test.Strategy
+    .memo ("Humanize", () => nit.require ("nit.utils.Humanize"))
     .method ("expectingResultJsonToBe", function (json)
     {
         const self = this;

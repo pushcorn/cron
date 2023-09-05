@@ -3,9 +3,10 @@ test.object ("cron.fields.Second")
         .given ("*")
         .expectingResultJsonToBe (`
         {
-          "expr": "0-59",
+          "expr": "*",
           "items": [
             {
+              "field": null,
               "expr": "0-59",
               "from": 0,
               "to": 59,
@@ -84,6 +85,7 @@ test.object ("cron.fields.Second")
           "expr": "10-30/5,35/4",
           "items": [
             {
+              "field": null,
               "expr": "10-30/5",
               "from": 10,
               "to": 30,
@@ -97,6 +99,7 @@ test.object ("cron.fields.Second")
               "interval": 5
             },
             {
+              "field": null,
               "expr": "35-59/4",
               "from": 35,
               "to": 59,
@@ -135,5 +138,28 @@ test.object ("cron.fields.Second")
 
     .given ("50-20")
         .throws ("error.min_value_greater_than_max_value")
+        .commit ()
+;
+
+
+test.method ("cron.fields.Second", "getValueForDate")
+    .should ("return the date value from a date")
+        .given (nit.parseDate ("2023-03-05 13:24:35"))
+        .returns (35)
+        .commit ()
+;
+
+
+test.method ("cron.fields.Second", "forward")
+    .should ("increment the dates by the given value")
+        .given (nit.parseDate ("2023-03-05 13:24:35"), 10)
+        .returns ()
+        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2023)
+        .expectingMethodToReturnValue ("args.0.getMonth", null, 2)
+        .expectingMethodToReturnValue ("args.0.getDate", null, 5)
+        .expectingMethodToReturnValue ("args.0.getHours", null, 13)
+        .expectingMethodToReturnValue ("args.0.getMinutes", null, 24)
+        .expectingMethodToReturnValue ("args.0.getSeconds", null, 45)
+        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
         .commit ()
 ;

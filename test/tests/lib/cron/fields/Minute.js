@@ -3,9 +3,10 @@ test.object ("cron.fields.Minute")
         .given ("*")
         .expectingResultJsonToBe (`
         {
-          "expr": "0-59",
+          "expr": "*",
           "items": [
             {
+              "field": null,
               "expr": "0-59",
               "from": 0,
               "to": 59,
@@ -84,6 +85,7 @@ test.object ("cron.fields.Minute")
           "expr": "10-30/5,35/4",
           "items": [
             {
+              "field": null,
               "expr": "10-30/5",
               "from": 10,
               "to": 30,
@@ -97,6 +99,7 @@ test.object ("cron.fields.Minute")
               "interval": 5
             },
             {
+              "field": null,
               "expr": "35-59/4",
               "from": 35,
               "to": 59,
@@ -115,6 +118,38 @@ test.object ("cron.fields.Minute")
         }
         `)
         .expectingPropertyToBe ("result.values", [10, 15, 20, 25, 30, 35, 39, 43, 47, 51, 55, 59])
+        .commit ()
+
+    .given ("*/5")
+        .expectingResultJsonToBe (`
+        {
+          "expr": "*/5",
+          "items": [
+            {
+              "field": null,
+              "expr": "0-59/5",
+              "from": 0,
+              "to": 59,
+              "values": [
+                0,
+                5,
+                10,
+                15,
+                20,
+                25,
+                30,
+                35,
+                40,
+                45,
+                50,
+                55
+              ],
+              "interval": 5
+            }
+          ]
+        }
+        `)
+        .expectingPropertyToBe ("result.values", [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55])
         .commit ()
 ;
 
@@ -135,5 +170,28 @@ test.object ("cron.fields.Minute")
 
     .given ("50-20")
         .throws ("error.min_value_greater_than_max_value")
+        .commit ()
+;
+
+
+test.method ("cron.fields.Minute", "getValueForDate")
+    .should ("return the date value from a date")
+        .given (nit.parseDate ("2023-03-05 13:24:35"))
+        .returns (24)
+        .commit ()
+;
+
+
+test.method ("cron.fields.Minute", "forward")
+    .should ("increment the dates by the given value")
+        .given (nit.parseDate ("2023-03-05 13:24:35"), 10)
+        .returns ()
+        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2023)
+        .expectingMethodToReturnValue ("args.0.getMonth", null, 2)
+        .expectingMethodToReturnValue ("args.0.getDate", null, 5)
+        .expectingMethodToReturnValue ("args.0.getHours", null, 13)
+        .expectingMethodToReturnValue ("args.0.getMinutes", null, 34)
+        .expectingMethodToReturnValue ("args.0.getSeconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
         .commit ()
 ;
