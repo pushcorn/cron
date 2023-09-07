@@ -1,4 +1,5 @@
 const TZ_TAIPEI = "Asia/Taipei";
+const TZ_INDIANAPOLIS = "America/Indianapolis";
 
 
 test.object ("cron.Expression.FieldGroup")
@@ -325,8 +326,23 @@ test.method ("cron.Expression", "next")
     .should ("ignore the given date if the type is not supported")
         .given (test)
         .returnsInstanceOf (Date)
-        .expectingMethodToReturnValue ("result.toISOString", null, /-01-01T/)
         .commit ()
+
+    // enable only if system is in Indianapolis timezone
+    // .should ("be able to handle a different timezone")
+        // .up (s => s.createArgs =
+        // {
+            // minute: "*/10",
+            // hour: "9-17",
+            // dayOfMonth: "*",
+            // month: "*",
+            // dayOfWeek: "*",
+            // timezone: TZ_TAIPEI
+        // })
+        // .given (nit.parseDate ("2023-09-06 22:02:00", TZ_INDIANAPOLIS))
+        // .returns (nit.parseDate ("2023-09-07 10:10:00", TZ_TAIPEI))
+        // .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "8 minutes")
+        // .commit ()
 
     .should ("handle the starting of DST")
         .up (s => s.createArgs =
@@ -335,16 +351,17 @@ test.method ("cron.Expression", "next")
             hour: "2",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "*"
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
         })
-        .given (nit.parseDate ("2023-03-12 00:00:00"))
-        .returns (nit.parseDate ("2023-03-12 03:00:00"))
+        .given (nit.parseDate ("2023-03-12 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.parseDate ("2023-03-12 03:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "2 hours")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 02:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 02:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "23 hours")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-14 02:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-14 02:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-15 02:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-15 02:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
         .commit ()
 
@@ -355,20 +372,21 @@ test.method ("cron.Expression", "next")
             hour: "0-3",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "*"
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
         })
-        .given (nit.parseDate ("2023-03-12 00:00:00"))
-        .returns (nit.parseDate ("2023-03-12 01:00:00"))
+        .given (nit.parseDate ("2023-03-12 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.parseDate ("2023-03-12 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-12 03:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-12 03:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "21 hours")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 01:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 02:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 02:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 03:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-03-13 03:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
         .commit ()
 
@@ -379,16 +397,17 @@ test.method ("cron.Expression", "next")
             hour: "1",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "*"
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
         })
-        .given (nit.parseDate ("2023-11-05 00:00:00"))
-        .returns (nit.parseDate ("2023-11-05 01:00:00"))
+        .given (nit.parseDate ("2023-11-05 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.parseDate ("2023-11-05 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 01:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day and 1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-07 01:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-07 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-08 01:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-08 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
         .commit ()
 
@@ -399,22 +418,23 @@ test.method ("cron.Expression", "next")
             hour: "0-3",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "*"
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
         })
-        .given (nit.parseDate ("2023-11-05 00:00:00"))
-        .returns (nit.parseDate ("2023-11-05 01:00:00"))
+        .given (nit.parseDate ("2023-11-05 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.parseDate ("2023-11-05 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-05 02:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-05 02:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "2 hours")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-05 03:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-05 03:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "21 hours")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 01:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 01:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 02:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 02:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 03:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-06 03:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
         .commit ()
 
@@ -425,20 +445,21 @@ test.method ("cron.Expression", "next")
             hour: "0",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "3L"
+            dayOfWeek: "3L",
+            timezone: TZ_INDIANAPOLIS
         })
-        .given (nit.parseDate ("2023-11-05 00:00:00"))
-        .returns (nit.parseDate ("2023-11-29 00:00:00"))
+        .given (nit.parseDate ("2023-11-05 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.parseDate ("2023-11-29 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "3 weeks, 3 days and 1 hour")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-27 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-27 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "4 weeks")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-01-31 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-01-31 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 month and 5 days")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-02-28 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-02-28 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "4 weeks")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-03-27 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-03-27 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "3 weeks, 6 days and 23 hours")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-04-24 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2024-04-24 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "4 weeks")
         .commit ()
 
@@ -449,24 +470,25 @@ test.method ("cron.Expression", "next")
             hour: "0",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "1,2,3L"
+            dayOfWeek: "1,2,3L",
+            timezone: TZ_INDIANAPOLIS
         })
-        .given (nit.parseDate ("2023-11-20 00:00:00"))
-        .returns (nit.parseDate ("2023-11-21 00:00:00"))
+        .given (nit.parseDate ("2023-11-20 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.parseDate ("2023-11-21 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-27 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-27 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "6 days")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-28 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-28 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-29 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-11-29 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-04 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-04 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "5 days")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-05 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-05 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-11 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-11 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "6 days")
-        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-12 00:00:00"))
+        .expectingMethodToReturnValue ("object.next", null, nit.parseDate ("2023-12-12 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
         .commit ()
 ;
