@@ -338,6 +338,33 @@ test.method ("cron.Expression", "next")
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "8 minutes")
         .commit ()
 
+    .reset ()
+        .up (s => s.createArgs =
+        {
+            minute: "0",
+            hour: "0-3",
+            dayOfMonth: "*",
+            month: "*",
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
+        })
+        .given (nit.Date ("2023-03-11 23:02:00", TZ_TAIPEI))
+        .returns (nit.Date ("2023-03-12 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "13 hours and 58 minutes")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-03-12 01:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-03-12 03:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-03-13 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "21 hours")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-03-13 01:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-03-13 02:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-03-13 03:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 hour")
+        .commit ()
+
     .should ("handle the starting of DST")
         .up (s => s.createArgs =
         {
