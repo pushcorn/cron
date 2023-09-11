@@ -10,7 +10,7 @@ test.method ("cron", "getLastDateOfMonth", true)
         .commit ()
 
     .reset ()
-        .given (new Date (2023, 8, 1))
+        .given (new nit.Date ("2023-09-01", "America/Indianapolis"))
         .returnsInstanceOf ("Date")
         .expectingMethodToReturnValue ("result.getUTCMonth", null, 8)
         .expectingMethodToReturnValue ("result.getUTCDate", null, 30)

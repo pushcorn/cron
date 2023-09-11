@@ -113,7 +113,7 @@ test.object ("cron.fields.DayOfMonth")
 
 test.method ("cron.fields.DayOfMonth", "getValueForDate")
     .should ("return the date value from a date")
-        .given (nit.parseDate ("2023-03-05"))
+        .given (cron.getDateAsUtc (nit.parseDate ("2023-03-05", "America/Indianapolis")))
         .returns (5)
         .commit ()
 
