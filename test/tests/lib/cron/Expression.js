@@ -491,7 +491,7 @@ test.method ("cron.Expression", "next")
             hour: "0",
             dayOfMonth: "*",
             month: "*",
-            dayOfWeek: "1,2,3L",
+            dayOfWeek: "1,2,WedL",
             timezone: TZ_INDIANAPOLIS
         })
         .given (nit.Date ("2023-11-20 00:00:00", TZ_INDIANAPOLIS))
@@ -511,5 +511,47 @@ test.method ("cron.Expression", "next")
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "6 days")
         .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-12-12 00:00:00", TZ_INDIANAPOLIS))
         .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
+        .commit ()
+
+    .should ("handle last day of month syntax")
+        .up (s => s.createArgs =
+        {
+            minute: "0",
+            hour: "0",
+            dayOfMonth: "L-5",
+            month: "*",
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
+        })
+        .given (nit.Date ("2023-11-20 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.Date ("2023-11-25 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "5 days")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2023-12-26 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 month and 1 day")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-01-26 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 month and 1 day")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-02-24 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "4 weeks and 1 day")
+        .commit ()
+
+    .should ("handle last day of month syntax")
+        .up (s => s.createArgs =
+        {
+            minute: "0",
+            hour: "0",
+            dayOfMonth: "L-30",
+            month: "*",
+            dayOfWeek: "*",
+            timezone: TZ_INDIANAPOLIS
+        })
+        .given (nit.Date ("2023-11-20 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.Date ("2023-12-01 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 week and 4 days")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-01-01 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 month and 1 day")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-03-01 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "2 months")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-05-01 00:00:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "2 months and 23 hours")
         .commit ()
 ;

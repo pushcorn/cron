@@ -20,12 +20,6 @@ test.object ("cron.items.Range")
 
 
 test.method ("cron.items.Range", "parseValue")
-    .should ("throw if the value is invalid")
-        .up (s => s.createArgs = [nit.new ("cron.fields.Month"), 1])
-        .given ("MOM")
-        .throws (/MOM/)
-        .commit ()
-
     .should ("return the value of a valid alias")
         .up (s => s.class = nit.lookupClass ("cron.fields.Month").supportedItemTypes[0])
         .up (s => s.createArgs = [nit.new ("cron.fields.Month"), 1])

@@ -88,6 +88,21 @@ test.object ("cron.fields.DayOfMonth")
         `)
         .expectingPropertyToBe ("result.values", [1, 6, 11, 16, 21, 25, 29])
         .commit ()
+
+    .given ("L-3")
+        .expectingResultJsonToBe (`
+        {
+          "expr": "L-3",
+          "items": [
+            {
+              "field": null,
+              "expr": "L-3",
+              "offset": 3
+            }
+          ]
+        }
+        `)
+        .commit ()
 ;
 
 
