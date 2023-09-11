@@ -49,14 +49,6 @@ test.method ("cron.items.Range", "isWildcard")
 
 
 test.method ("cron.items.Range", "getStepsToNextOccurrence")
-    .should ("include the real field value in values due to DST changes")
-        .up (s => s.createArgs = [nit.new ("cron.fields.Hour"), "2"])
-        .given (nit.parseDate ("2023-03-12 02:00:00", "America/Indianapolis"))
-        .mock ("object.field", "getValueForDate", () => 3)
-        .mock ("object.field", "getRealValueForDate", () => 3)
-        .returns (0)
-        .commit ()
-
     .should ("returns the steps to the next occurrence")
         .up (s => s.createArgs = [nit.new ("cron.fields.Hour"), "10"])
         .given (new Date)

@@ -1,3 +1,6 @@
+const cron = nit.require ("cron");
+
+
 test.object ("cron.fields.Hour")
     .should ("be able to parse %{args.0}")
         .given ("*")
@@ -103,7 +106,7 @@ test.object ("cron.fields.Hour")
 
 test.method ("cron.fields.Hour", "getValueForDate")
     .should ("return the date value from a date")
-        .given (nit.parseDate ("2023-03-05 13:24:35"))
+        .given (cron.getDateAsUtc (nit.parseDate ("2023-03-05 13:24:35")))
         .returns (13)
         .commit ()
 ;
@@ -111,14 +114,14 @@ test.method ("cron.fields.Hour", "getValueForDate")
 
 test.method ("cron.fields.Hour", "forward")
     .should ("increment the dates by the given value")
-        .given (nit.parseDate ("2023-03-05 13:24:35"), 10)
+        .given (cron.getDateAsUtc (nit.parseDate ("2023-03-05 13:24:35")), 10)
         .returns ()
-        .expectingMethodToReturnValue ("args.0.getFullYear", null, 2023)
-        .expectingMethodToReturnValue ("args.0.getMonth", null, 2)
-        .expectingMethodToReturnValue ("args.0.getDate", null, 5)
-        .expectingMethodToReturnValue ("args.0.getHours", null, 23)
-        .expectingMethodToReturnValue ("args.0.getMinutes", null, 0)
-        .expectingMethodToReturnValue ("args.0.getSeconds", null, 0)
-        .expectingMethodToReturnValue ("args.0.getMilliseconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getUTCFullYear", null, 2023)
+        .expectingMethodToReturnValue ("args.0.getUTCMonth", null, 2)
+        .expectingMethodToReturnValue ("args.0.getUTCDate", null, 5)
+        .expectingMethodToReturnValue ("args.0.getUTCHours", null, 23)
+        .expectingMethodToReturnValue ("args.0.getUTCMinutes", null, 0)
+        .expectingMethodToReturnValue ("args.0.getUTCSeconds", null, 0)
+        .expectingMethodToReturnValue ("args.0.getUTCMilliseconds", null, 0)
         .commit ()
 ;
