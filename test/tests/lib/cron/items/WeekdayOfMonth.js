@@ -1,7 +1,7 @@
 const cron = nit.require ("cron");
 
 
-test.object ("cron.items.Weekday")
+test.object ("cron.items.WeekdayOfMonth")
     .should ("throw if the expression is invalid (%{args.1})")
         .given (nit.new ("cron.fields.DayOfMonth"), "LA")
         .given (nit.new ("cron.fields.DayOfMonth"), "W")
@@ -25,7 +25,7 @@ test.object ("cron.items.Weekday")
 ;
 
 
-test.method ("cron.items.Weekday", "applicableToMonth")
+test.method ("cron.items.WeekdayOfMonth", "applicableToMonth")
     .should ("return true if the item is applicable to the given month")
         .up (s => s.createArgs = [nit.new ("cron.fields.DayOfMonth"), "LW"])
         .given (2)
@@ -40,7 +40,7 @@ test.method ("cron.items.Weekday", "applicableToMonth")
 ;
 
 
-test.method ("cron.items.Weekday", "getTargetDate")
+test.method ("cron.items.WeekdayOfMonth", "getTargetDate")
     .should ("return the nearest weekday of the given date")
         .up (s => s.createArgs = [nit.new ("cron.fields.DayOfMonth"), "LW"])
         .given (cron.getDateAsUtc (new Date (2024, 1, 2)))
@@ -69,7 +69,7 @@ test.method ("cron.items.Weekday", "getTargetDate")
 ;
 
 
-test.method ("cron.items.Weekday", "getStepsToNextOccurrence")
+test.method ("cron.items.WeekdayOfMonth", "getStepsToNextOccurrence")
     .should ("return the steps to next occurrence")
         .up (s => s.createArgs = [nit.new ("cron.fields.DayOfMonth"), "LW"])
         .given (cron.getDateAsUtc (new Date (2024, 1, 2)))
