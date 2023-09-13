@@ -4,12 +4,18 @@ const cron = nit.require ("cron");
 test.object ("cron.items.LastDayOfWeek")
     .should ("throw if the expression is invalid")
         .given (nit.new ("cron.fields.DayOfWeek"), "MOM")
+        .given (nit.new ("cron.fields.DayOfWeek"), "9L")
         .throws ("error.invalid_value")
         .commit ()
 
     .should ("accept value in dddL format")
-        .given (nit.new ("cron.fields.DayOfWeek"), "TueL")
+        .given (nit.new ("cron.fields.DayOfWeek"), "2L")
         .expectingPropertyToBe ("result.day", 2)
+        .commit ()
+
+    .reset ()
+        .given (nit.new ("cron.fields.DayOfWeek"), "7L")
+        .expectingPropertyToBe ("result.day", 0)
         .commit ()
 ;
 

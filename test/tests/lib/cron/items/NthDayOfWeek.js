@@ -12,6 +12,7 @@ test.object ("cron.items.NthDayOfWeek")
         .commit ()
 
     .should ("accept valid expression '%{args.1}'")
+        .given (nit.new ("cron.fields.DayOfWeek"), "7#5")
         .given (nit.new ("cron.fields.DayOfWeek"), "3#2")
         .given (nit.new ("cron.fields.DayOfWeek"), "6#5")
         .commit ()

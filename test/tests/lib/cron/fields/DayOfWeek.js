@@ -29,10 +29,10 @@ test.object ("cron.fields.DayOfWeek")
         `)
         .commit ()
 
-    .given ("1-3/5,4/4")
+    .given ("1-3/5,4/4,5-7")
         .expectingResultJsonToBe (`
         {
-          "expr": "1-3/5,4/4",
+          "expr": "1-3/5,4/4,5-7",
           "items": [
             {
               "field": null,
@@ -53,17 +53,29 @@ test.object ("cron.fields.DayOfWeek")
                 4
               ],
               "interval": 4
+            },
+            {
+              "field": null,
+              "expr": "5-0",
+              "from": 5,
+              "to": 0,
+              "values": [
+                5,
+                6,
+                0
+              ],
+              "interval": 1
             }
           ]
         }
         `)
-        .expectingPropertyToBe ("result.values", [1, 4])
+        .expectingPropertyToBe ("result.values", [0, 1, 4, 5, 6])
         .commit ()
 
-    .given ("mon,wed,fri")
+    .given ("mon,wed,fri-sun")
         .expectingResultJsonToBe (`
         {
-          "expr": "mon,wed,fri",
+          "expr": "mon,wed,fri-sun",
           "items": [
             {
               "field": null,
@@ -87,18 +99,20 @@ test.object ("cron.fields.DayOfWeek")
             },
             {
               "field": null,
-              "expr": "5",
+              "expr": "5-0",
               "from": 5,
-              "to": 5,
+              "to": 0,
               "values": [
-                5
+                5,
+                6,
+                0
               ],
               "interval": 1
             }
           ]
         }
         `)
-        .expectingPropertyToBe ("result.values", [1, 3, 5])
+        .expectingPropertyToBe ("result.values", [0, 1, 3, 5, 6])
         .commit ()
 
     .given ("mon-Wed/1,Thu/2")
@@ -190,6 +204,7 @@ test.object ("cron.fields.DayOfWeek")
         .given ("/")
         .given ("2/3#")
         .given ("5-")
+        .given ("mon-fri/10")
         .throws ("error.invalid_expr")
         .commit ()
 
@@ -199,10 +214,6 @@ test.object ("cron.fields.DayOfWeek")
 
     .given ("6-2")
         .throws ("error.min_value_greater_than_max_value")
-        .commit ()
-
-    .given ("mon-fri/10")
-        .throws ("error.interval_out_of_range")
         .commit ()
 ;
 
