@@ -6,7 +6,7 @@ test.object ("cron.items.Range")
 
     .should ("throw if the from value is greater than to value")
         .given ("10-5")
-        .throws ("error.min_value_greater_than_max_value")
+        .throws ("error.from_value_greater_than_to_value")
         .commit ()
 
     .should ("be able to parse expression with an interval")

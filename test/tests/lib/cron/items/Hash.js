@@ -165,3 +165,21 @@ test.object ("cron.items.Hash")
         .expectingMethodToReturnValue ("result.getStepsToNextOccurrence", cron.getDateAsUtc (new Date (2023, 1, 28)), 3)
         .commit ()
 ;
+
+
+test.method ("cron.items.Hash", "applicableToMonth")
+    .should ("return the true if some values are within the range of the given month")
+        .up (s => s.class = nit.lookupClass ("cron.fields.DayOfMonth").supportedItemTypes[1])
+        .up (s => s.createArgs = "H(1-10)")
+        .given (2)
+        .returns (true)
+        .commit ()
+
+    .should ("return the false if NO values are within the range of the given month")
+        .up (s => s.class = nit.lookupClass ("cron.fields.DayOfMonth").supportedItemTypes[1])
+        .up (s => s.createArgs = "H(30-31)")
+        .given (2)
+        .returns (false)
+        .commit ()
+;
+

@@ -227,7 +227,7 @@ test.object ("cron.fields.Month")
         .commit ()
 
     .given ("7-2")
-        .throws ("error.min_value_greater_than_max_value")
+        .throws ("error.from_value_greater_than_to_value")
         .commit ()
 
     .given ("jan-feb/13")

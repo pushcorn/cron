@@ -154,7 +154,7 @@ test.object ("cron.fields.Second")
         .commit ()
 
     .given ("50-20")
-        .throws ("error.min_value_greater_than_max_value")
+        .throws ("error.from_value_greater_than_to_value")
         .commit ()
 ;
 

@@ -215,7 +215,7 @@ test.object ("cron.fields.DayOfWeek")
         .commit ()
 
     .given ("6-2")
-        .throws ("error.min_value_greater_than_max_value")
+        .throws ("error.from_value_greater_than_to_value")
         .commit ()
 ;
 

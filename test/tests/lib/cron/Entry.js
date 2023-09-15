@@ -364,3 +364,17 @@ test.method ("cron.Entry", "next")
         .expectingMethodToReturnValue ("object.next", null, nit.Date ("2025-05-31 00:00:00", TZ_INDIANAPOLIS))
         .commit ()
 ;
+
+
+test.method ("cron.Entry", "next")
+    .should ("handle hash syntax")
+        .up (s => s.createArgs = ["H H * * *", TZ_INDIANAPOLIS])
+        .given (nit.Date ("2024-08-07 00:00:00", TZ_INDIANAPOLIS))
+        .returns (nit.Date ("2024-08-07 14:39:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "14 hours and 39 minutes")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-08-08 14:39:00", TZ_INDIANAPOLIS))
+        .expectingExprToReturnValue ("Humanize.duration (object.nextTimeout)", "1 day")
+        .expectingMethodToReturnValue ("object.next", null, nit.Date ("2024-08-09 14:39:00", TZ_INDIANAPOLIS))
+        .commit ()
+;
+
