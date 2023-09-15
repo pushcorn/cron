@@ -9,7 +9,6 @@ test.object ("cron.fields.Hour")
           "expr": "*",
           "items": [
             {
-              "field": null,
               "expr": "0-23",
               "from": 0,
               "to": 23,
@@ -43,7 +42,25 @@ test.object ("cron.fields.Hour")
             }
           ]
         }
-        `)
+        `, "items")
+        .commit ()
+
+    .given ("H/4")
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H/4",
+          "items": [
+            {
+              "expr": "H/4",
+              "from": 0,
+              "to": 23,
+              "hasRange": false,
+              "interval": 4
+            }
+          ]
+        }
+        `, "items")
+        .expectingPropertyToBe ("result.items.0.values", [0, 4, 8, 12, 16, 20])
         .commit ()
 
     .given ("5-15/5,16/2")
@@ -52,7 +69,6 @@ test.object ("cron.fields.Hour")
           "expr": "5-15/5,16/2",
           "items": [
             {
-              "field": null,
               "expr": "5-15/5",
               "from": 5,
               "to": 15,
@@ -64,7 +80,6 @@ test.object ("cron.fields.Hour")
               "interval": 5
             },
             {
-              "field": null,
               "expr": "16-23/2",
               "from": 16,
               "to": 23,
@@ -78,8 +93,7 @@ test.object ("cron.fields.Hour")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [5, 10, 15, 16, 18, 20, 22])
+        `, "items")
         .commit ()
 ;
 

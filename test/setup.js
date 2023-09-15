@@ -1,10 +1,19 @@
 nit.test.Strategy
     .memo ("Humanize", () => nit.require ("nit.utils.Humanize"))
-    .method ("expectingResultJsonToBe", function (json)
+    .method ("expectingResultJsonToBe", function (json, ...otherProperties)
     {
-        const self = this;
+        let self = this;
+        let cls = self.constructor;
 
-        self.expecting ("the result JSON to be %{value}", nit.trim.text (json), s => nit.toJson (s.result.toPojo (), 2));
+
+        self.expecting ("the result JSON to be %{value}", nit.trim.text (json), s =>
+        {
+            let pojo = s.result.toPojo ();
+
+            otherProperties.forEach (p => pojo[p] = nit.clone (nit.get (s.result, p), cls.toPojoFilter));
+
+            return nit.toJson (pojo, 2);
+        });
 
         self.expectors[self.expectors.length - 1].validator.sourceLine = self.constructor.getSourceLine (__filename);
 

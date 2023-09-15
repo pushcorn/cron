@@ -9,7 +9,6 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "*",
           "items": [
             {
-              "field": null,
               "expr": "0-6",
               "from": 0,
               "to": 6,
@@ -26,7 +25,25 @@ test.object ("cron.fields.DayOfWeek")
             }
           ]
         }
-        `)
+        `, "items")
+        .commit ()
+
+    .given ("H/2")
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H/2",
+          "items": [
+            {
+              "expr": "H/2",
+              "from": 0,
+              "to": 6,
+              "hasRange": false,
+              "interval": 2
+            }
+          ]
+        }
+        `, "items")
+        .expectingPropertyToBe ("result.items.0.values", [0, 2, 4, 6])
         .commit ()
 
     .given ("1-3/5,4/4,5-7")
@@ -35,7 +52,6 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "1-3/5,4/4,5-7",
           "items": [
             {
-              "field": null,
               "expr": "1-3/5",
               "from": 1,
               "to": 3,
@@ -45,7 +61,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 5
             },
             {
-              "field": null,
               "expr": "4-6/4",
               "from": 4,
               "to": 6,
@@ -55,7 +70,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 4
             },
             {
-              "field": null,
               "expr": "5-0",
               "from": 5,
               "to": 0,
@@ -68,8 +82,7 @@ test.object ("cron.fields.DayOfWeek")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [0, 1, 4, 5, 6])
+        `, "items")
         .commit ()
 
     .given ("mon,wed,fri-sun")
@@ -78,7 +91,6 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "mon,wed,fri-sun",
           "items": [
             {
-              "field": null,
               "expr": "1",
               "from": 1,
               "to": 1,
@@ -88,7 +100,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "3",
               "from": 3,
               "to": 3,
@@ -98,7 +109,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "5-0",
               "from": 5,
               "to": 0,
@@ -111,8 +121,7 @@ test.object ("cron.fields.DayOfWeek")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [0, 1, 3, 5, 6])
+        `, "items")
         .commit ()
 
     .given ("mon-Wed/1,Thu/2")
@@ -121,7 +130,6 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "mon-Wed/1,Thu/2",
           "items": [
             {
-              "field": null,
               "expr": "1-3/1",
               "from": 1,
               "to": 3,
@@ -133,7 +141,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "4-6/2",
               "from": 4,
               "to": 6,
@@ -145,8 +152,7 @@ test.object ("cron.fields.DayOfWeek")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [1, 2, 3, 4, 6])
+        `, "items")
         .commit ()
 
     .given ("sun-wed,fri/2,tue-thu")
@@ -155,7 +161,6 @@ test.object ("cron.fields.DayOfWeek")
           "expr": "sun-wed,fri/2,tue-thu",
           "items": [
             {
-              "field": null,
               "expr": "0-3",
               "from": 0,
               "to": 3,
@@ -168,7 +173,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "5-6/2",
               "from": 5,
               "to": 6,
@@ -178,7 +182,6 @@ test.object ("cron.fields.DayOfWeek")
               "interval": 2
             },
             {
-              "field": null,
               "expr": "2-4",
               "from": 2,
               "to": 4,
@@ -191,8 +194,7 @@ test.object ("cron.fields.DayOfWeek")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [0, 1, 2, 3, 4, 5])
+        `, "items")
         .commit ()
 ;
 

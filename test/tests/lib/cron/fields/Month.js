@@ -9,7 +9,6 @@ test.object ("cron.fields.Month")
           "expr": "*",
           "items": [
             {
-              "field": null,
               "expr": "1-12",
               "from": 1,
               "to": 12,
@@ -31,7 +30,25 @@ test.object ("cron.fields.Month")
             }
           ]
         }
-        `)
+        `, "items")
+        .commit ()
+
+    .given ("H/4")
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H/4",
+          "items": [
+            {
+              "expr": "H/4",
+              "from": 1,
+              "to": 12,
+              "hasRange": false,
+              "interval": 4
+            }
+          ]
+        }
+        `, "items")
+        .expectingPropertyToBe ("result.items.0.values", [4, 8, 12])
         .commit ()
 
     .given ("1-6/1,7/2")
@@ -40,7 +57,6 @@ test.object ("cron.fields.Month")
           "expr": "1-6/1,7/2",
           "items": [
             {
-              "field": null,
               "expr": "1-6/1",
               "from": 1,
               "to": 6,
@@ -55,7 +71,6 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "7-12/2",
               "from": 7,
               "to": 12,
@@ -68,8 +83,7 @@ test.object ("cron.fields.Month")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [1, 2, 3, 4, 5, 6, 7, 9, 11])
+        `, "items")
         .commit ()
 
     .given ("Jan,mar,JUN")
@@ -78,7 +92,6 @@ test.object ("cron.fields.Month")
           "expr": "Jan,mar,JUN",
           "items": [
             {
-              "field": null,
               "expr": "1",
               "from": 1,
               "to": 1,
@@ -88,7 +101,6 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "3",
               "from": 3,
               "to": 3,
@@ -98,7 +110,6 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "6",
               "from": 6,
               "to": 6,
@@ -109,8 +120,7 @@ test.object ("cron.fields.Month")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [1, 3, 6])
+        `, "items")
         .commit ()
 
     .given ("Jan-may/1,JUN/2")
@@ -119,7 +129,6 @@ test.object ("cron.fields.Month")
           "expr": "Jan-may/1,JUN/2",
           "items": [
             {
-              "field": null,
               "expr": "1-5/1",
               "from": 1,
               "to": 5,
@@ -133,7 +142,6 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "6-12/2",
               "from": 6,
               "to": 12,
@@ -147,8 +155,7 @@ test.object ("cron.fields.Month")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [1, 2, 3, 4, 5, 6, 8, 10, 12])
+        `, "items")
         .commit ()
 
     .given ("Jan-mar,JUN/2")
@@ -157,7 +164,6 @@ test.object ("cron.fields.Month")
           "expr": "Jan-mar,JUN/2",
           "items": [
             {
-              "field": null,
               "expr": "1-3",
               "from": 1,
               "to": 3,
@@ -169,7 +175,6 @@ test.object ("cron.fields.Month")
               "interval": 1
             },
             {
-              "field": null,
               "expr": "6-12/2",
               "from": 6,
               "to": 12,
@@ -183,12 +188,26 @@ test.object ("cron.fields.Month")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [1, 2, 3, 6, 8, 10, 12])
+        `, "items")
         .commit ()
 
     .given ("jan-feb/12")
-        .expectingPropertyToBe ("result.values", [1])
+        .expectingResultJsonToBe (`
+        {
+          "expr": "jan-feb/12",
+          "items": [
+            {
+              "expr": "1-2/12",
+              "from": 1,
+              "to": 2,
+              "values": [
+                1
+              ],
+              "interval": 12
+            }
+          ]
+        }
+        `, "items")
         .commit ()
 ;
 

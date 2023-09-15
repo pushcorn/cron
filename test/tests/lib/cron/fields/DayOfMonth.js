@@ -9,7 +9,6 @@ test.object ("cron.fields.DayOfMonth")
           "expr": "*",
           "items": [
             {
-              "field": null,
               "expr": "1-31",
               "from": 1,
               "to": 31,
@@ -50,7 +49,7 @@ test.object ("cron.fields.DayOfMonth")
             }
           ]
         }
-        `)
+        `, "items")
         .commit ()
 
     .given ("1-20/5,21/4")
@@ -59,7 +58,6 @@ test.object ("cron.fields.DayOfMonth")
           "expr": "1-20/5,21/4",
           "items": [
             {
-              "field": null,
               "expr": "1-20/5",
               "from": 1,
               "to": 20,
@@ -72,7 +70,6 @@ test.object ("cron.fields.DayOfMonth")
               "interval": 5
             },
             {
-              "field": null,
               "expr": "21-31/4",
               "from": 21,
               "to": 31,
@@ -85,23 +82,29 @@ test.object ("cron.fields.DayOfMonth")
             }
           ]
         }
-        `)
-        .expectingPropertyToBe ("result.values", [1, 6, 11, 16, 21, 25, 29])
+        `, "items")
         .commit ()
 
-    .given ("L-3")
+    .given ("L-3,H/4")
         .expectingResultJsonToBe (`
         {
-          "expr": "L-3",
+          "expr": "L-3,H/4",
           "items": [
             {
-              "field": null,
               "expr": "L-3",
               "offset": 3
+            },
+            {
+              "expr": "H/4",
+              "from": 1,
+              "to": 31,
+              "hasRange": false,
+              "interval": 4
             }
           ]
         }
-        `)
+        `, "items")
+        .expectingPropertyToBe ("result.items.1.values", [4, 8, 12, 16, 20, 24, 28])
         .commit ()
 ;
 
@@ -122,6 +125,21 @@ test.object ("cron.fields.DayOfMonth")
 
     .given ("31-2")
         .throws ("error.min_value_greater_than_max_value")
+        .commit ()
+;
+
+
+test.method ("cron.fields.DayOfMonth", "applicableToMonth")
+    .should ("return the true if some values are within the range of the given month")
+        .up (s => s.createArgs = "*")
+        .given (2)
+        .returns (true)
+        .commit ()
+
+    .should ("return the false if some values are within the range of the given month")
+        .up (s => s.createArgs = "L-30")
+        .given (2)
+        .returns (false)
         .commit ()
 ;
 
