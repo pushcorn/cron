@@ -164,6 +164,78 @@ test.object ("cron.items.Hash")
         .expectingPropertyToBe ("result.hashCode", -190642437)
         .expectingMethodToReturnValue ("result.getStepsToNextOccurrence", cron.getDateAsUtc (new Date (2023, 1, 28)), 3)
         .commit ()
+
+    .should ("accept the range of aliases")
+        .up (s => s.class = nit.require ("cron.fields.Month").supportedItemTypes[1])
+        .given ("H(feb-oct)")
+        .after (s => s.result.field = nit.new ("cron.fields.Month"))
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H(feb-oct)",
+          "from": 2,
+          "to": 10,
+          "hasRange": true,
+          "interval": 1
+        }
+        `)
+        .expectingPropertyToBe ("result.values", [5])
+        .expectingPropertyToBe ("result.hashCode", 1088692125)
+        .expectingMethodToReturnValue ("result.getStepsToNextOccurrence", cron.getDateAsUtc (new Date (2023, 1, 28)), 3)
+        .commit ()
+
+    .should ("accept the range of aliases with interval")
+        .up (s => s.class = nit.require ("cron.fields.Month").supportedItemTypes[1])
+        .given ("H(feb-oct)/3")
+        .after (s => s.result.field = nit.new ("cron.fields.Month"))
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H(feb-oct)/3",
+          "from": 2,
+          "to": 10,
+          "hasRange": true,
+          "interval": 3
+        }
+        `)
+        .expectingPropertyToBe ("result.values", [3, 6, 9])
+        .expectingPropertyToBe ("result.hashCode", -693545413)
+        .expectingMethodToReturnValue ("result.getStepsToNextOccurrence", cron.getDateAsUtc (new Date (2023, 1, 28)), 1)
+        .commit ()
+
+    .should ("accept the value alias")
+        .up (s => s.class = nit.require ("cron.fields.DayOfWeek").supportedItemTypes[1])
+        .given ("H(5-7)")
+        .after (s => s.result.field = nit.new ("cron.fields.DayOfWeek"))
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H(5-7)",
+          "from": 5,
+          "to": 0,
+          "hasRange": true,
+          "interval": 1
+        }
+        `)
+        .expectingPropertyToBe ("result.values", [0])
+        .expectingPropertyToBe ("result.hashCode", -71004372)
+        .expectingMethodToReturnValue ("result.getStepsToNextOccurrence", cron.getDateAsUtc (new Date (2023, 1, 28)), 5)
+        .commit ()
+
+    .should ("accept the value alias with interval")
+        .up (s => s.class = nit.require ("cron.fields.DayOfWeek").supportedItemTypes[1])
+        .given ("H(3-7)/2")
+        .after (s => s.result.field = nit.new ("cron.fields.DayOfWeek"))
+        .expectingResultJsonToBe (`
+        {
+          "expr": "H(3-7)/2",
+          "from": 3,
+          "to": 0,
+          "hasRange": true,
+          "interval": 2
+        }
+        `)
+        .expectingPropertyToBe ("result.values", [3, 5, 0])
+        .expectingPropertyToBe ("result.hashCode", 56520912)
+        .expectingMethodToReturnValue ("result.getStepsToNextOccurrence", cron.getDateAsUtc (new Date (2023, 1, 28)), 1)
+        .commit ()
 ;
 
 
