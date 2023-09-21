@@ -1,8 +1,11 @@
 test.api ("cron.apis.ListJobs")
     .should ("list scheduled jobs")
     .before (s => s.context.server = new nit.new ("cron.Server"))
+    .before (s => s.context.server.jobs.push (nit.new ("cron.Job", 9, "0 0 * * *", "nit test")))
     .before (s => s.context.server.jobs.push (nit.new ("cron.Job", 1, "0 0 * * *", "nit test")))
     .expectingPropertyToBeOfType ("context.response", "cron.responses.JobListReturned")
-    .expectingPropertyToBe ("context.response.jobs.length", 1)
+    .expectingPropertyToBe ("context.response.jobs.length", 2)
+    .expectingPropertyToBe ("context.response.jobs.0.id", 9)
+    .expectingPropertyToBe ("context.response.jobs.1.id", 10)
     .commit ()
 ;
