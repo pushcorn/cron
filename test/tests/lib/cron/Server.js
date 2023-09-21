@@ -49,3 +49,45 @@ test.method ("cron.Server", "schedule")
     .expectingExprToReturnValue ("nit.keys (object.runnerMap).length", 1)
     .commit ()
 ;
+
+
+test.method ("cron.Server", "unschedule")
+    .should ("ignore the invalid job ID")
+        .given (3)
+        .returns ()
+        .commit ()
+
+    .should ("remove a schedule job")
+        .up (s => s.Runner = nit.require ("cron.Runner"))
+        .up (s => s.jobOne = nit.new ("cron.Job",
+        {
+            expr: "0 0 * * *",
+            command: "nit test"
+        }))
+        .given (3)
+        .before (s => s.object.schedule (s.jobOne))
+        .expectingExprToReturnValue ("nit.keys (object.runnerMap).length", 0)
+        .commit ()
+;
+
+
+test.method ("cron.Server", "getJob")
+    .should ("ignore the invalid job ID")
+        .given (3)
+        .returns ()
+        .commit ()
+
+    .should ("return a schedule job")
+        .up (s => s.Runner = nit.require ("cron.Runner"))
+        .up (s => s.jobOne = nit.new ("cron.Job",
+        {
+            expr: "0 0 * * *",
+            command: "nit test"
+        }))
+        .given (4)
+        .before (s => s.object.schedule (s.jobOne))
+        .after (s => s.object.unschedule (s.jobOne.id))
+        .returnsInstanceOf ("cron.Job")
+        .expectingPropertyToBe ("result.id", 4)
+        .commit ()
+;

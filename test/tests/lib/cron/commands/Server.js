@@ -6,11 +6,7 @@ test.command ("cron.commands.Server")
         .up (s => s.Server = nit.require ("cron.Server"))
         .up (s => s.Runner = nit.require ("cron.Runner"))
         .up (s => s.global = global)
-        .given (
-        {
-            port: 0,
-            stopTimeout: 0
-        })
+        .given ({ port: 0, stopTimeout: 0 })
         .mock ("Server.prototype", "writeLog")
         .mock ("global.Date", "now", function ()
         {
@@ -98,7 +94,9 @@ test.command ("cron.commands.Server")
         [
             "AddJob",
             "GetApiSpec",
-            "ListJobs"
+            "GetJob",
+            "ListJobs",
+            "RemoveJob"
         ])
         .expectingPropertyToBe ("responses.addJob.job.timeUntilNextRun", 21900000)
         .expectingPropertyToBe ("spawnOutput", "[ERROR] The command 'test:not-found' was not found.\n")
