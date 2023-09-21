@@ -1,6 +1,3 @@
-const Runner = nit.require ("cron.Runner");
-
-
 test.method ("cron.Runner", "start")
     .should ("start the runner")
         .up (s => s.createArgs = nit.new ("cron.Job",
@@ -14,63 +11,59 @@ test.method ("cron.Runner", "start")
         })
         .returnsInstanceOf ("cron.Runner")
         .expectingPropertyToBe ("result.job.timeUntilNextRunHumanized", "9 hours and 5 minutes")
-        .expectingExprToReturnValue ("result.timer > 0", true)
+        .expectingPropertyToBeOfType ("result.timer", "nit.utils.Timer")
         .expectingMethodToReturnValueOfType ("result.stop", null, "cron.Runner")
         .commit ()
-;
 
-
-test.method ("cron.Runner", "run")
-    .should ("run the scheduled job")
+    .should ("invoke run when the timer fires")
+        .up (s => s.global = global)
+        .up (s => (s.lock = new nit.Deferred) && null)
         .up (s => s.createArgs = nit.new ("cron.Job",
         {
             expr: "0 0 1 * *",
             command: "nit test:not-found"
         }))
-        .before (async (s) =>
+        .mock ("global.Date", "now", function ()
         {
-            test.mock (Date, "now", nit.Date ("2023-09-02 14:55", "America/Indianapolis").getTime ());
+            let { iteration, strategy: s } = this;
 
-            let timeoutMock = test.mock (global, "setTimeout", function (cb, timeout)
+            if (iteration == 1)
             {
-                s.runCb = cb;
-                s["runTimeout" + timeoutMock.iteration] = timeout;
+                s.now = nit.Date ("2023-09-02 14:55", "America/Indianapolis").getTime ();
+            }
 
-            }, 3);
-
-            let runner = s.object;
-
-            await runner.start ();
-
-            s.runOnTimeout1 = runner.runOnTimeout;
-            s.timeUntilNextRunHumanized1 = runner.job.timeUntilNextRunHumanized;
-
-            test.mock (Date, "now", nit.Date ("2023-09-02 14:55", "America/Indianapolis").getTime () + Runner.MAX_TIMEOUT);
+            return s.now;
         })
-        .after (async (s) =>
+        .mock ("global", "setTimeout", function (cb, timeout)
         {
-            let runner = s.object;
+            let { targetMethod: setTimeout, strategy: s } = this;
 
-            s.runOnTimeout2 = runner.runOnTimeout;
-            s.timeUntilNextRunHumanized2 = runner.job.timeUntilNextRunHumanized;
+            s.now += timeout;
 
-            await s.runCb ();
+            setTimeout (function ()
+            {
+                cb (); // eslint-disable-line callback-return
+
+                if (timeout < 2147483647)
+                {
+                    s.lock.resolve ();
+                }
+
+            }, 1);
         })
-        .mock ("object", "spawn")
+        .mock ("object", "run")
+        .after (s => s.lock)
         .returnsInstanceOf ("cron.Runner")
-        .expectingPropertyToBe ("runTimeout1", Runner.MAX_TIMEOUT)
-        .expectingPropertyToBe ("runTimeout2", 304416353)
-        .expectingPropertyToBe ("runOnTimeout1", false)
-        .expectingPropertyToBe ("runOnTimeout2", true)
-        .expectingPropertyToBe ("timeUntilNextRunHumanized1", "4 weeks, 9 hours and 5 minutes")
-        .expectingPropertyToBe ("timeUntilNextRunHumanized2", "3 days, 12 hours, 33 minutes, 36 seconds and 353 milliseconds")
-        .expectingPropertyToBe ("mocks.0.invocations.length", 1)
+        .expectingPropertyToBe ("mocks.1.invocations.length", 2)
+        .expectingPropertyToBe ("mocks.1.invocations.0.args.1", 2147483647)
+        .expectingPropertyToBe ("mocks.1.invocations.1.args.1", 304416353)
+        .expectingPropertyToBe ("mocks.2.invocations.length", 1)
         .commit ()
 ;
 
 
-test.method ("cron.Runner", "spawn")
-    .should ("spawn a child process for the job command")
+test.method ("cron.Runner", "run")
+    .should ("run the job command")
         .up (s => s.createArgs = nit.new ("cron.Job",
         {
             expr: "0 0 * * *",
@@ -89,6 +82,7 @@ test.method ("cron.Runner", "spawn")
                 }
             };
         })
+        .after (s => s.object.stop ())
         .expectingPropertyToBe ("mocks.0.invocations.0.args.0", "nit test:not-found")
         .expectingPropertyToContain ("mocks.0.invocations.0.args.1",
         {
@@ -101,5 +95,30 @@ test.method ("cron.Runner", "spawn")
             }
         })
         .expectingPropertyToBe ("object.job.lastExitCode", 9)
+        .commit ()
+
+    .should ("catch the exception and set job's lastExitCode to -1")
+        .up (s => s.createArgs = nit.new ("cron.Job",
+        {
+            expr: "0 0 * * *",
+            command: "nit test:not-found",
+            env:
+            {
+                NIT_DEBUG: "cron.*"
+            }
+        }))
+        .mock ("class", "spawn", function ()
+        {
+            return {
+                on: () =>
+                {
+                    throw new Error ("ERR!");
+                }
+            };
+        })
+        .after (s => s.object.stop ())
+        .throws ("ERR!")
+        .expectingPropertyToBe ("mocks.0.invocations.0.args.0", "nit test:not-found")
+        .expectingPropertyToBe ("object.job.lastExitCode", -1)
         .commit ()
 ;
