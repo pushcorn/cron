@@ -21,6 +21,7 @@ test.method ("cron.Server", "start")
 test.method ("cron.Server", "stop")
     .should ("stop the scheduled runners")
     .mock ("object", "writeLog")
+    .before (s => s.object.ready.resolve ())
     .before (s => s.object.runnerMap[1] =
     {
         stop: () => s.runnerStopCalled = true

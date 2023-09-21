@@ -3,7 +3,8 @@ test.method ("cron.Runner", "start")
         .up (s => s.createArgs = nit.new ("cron.Job",
         {
             expr: "0 0 * * *",
-            command: "nit test"
+            command: "nit test",
+            timezone: "America/Indianapolis"
         }))
         .before (() =>
         {
@@ -21,7 +22,8 @@ test.method ("cron.Runner", "start")
         .up (s => s.createArgs = nit.new ("cron.Job",
         {
             expr: "0 0 1 * *",
-            command: "nit test:not-found"
+            command: "nit test:not-found",
+            timezone: "America/Indianapolis"
         }))
         .mock ("global.Date", "now", function ()
         {
