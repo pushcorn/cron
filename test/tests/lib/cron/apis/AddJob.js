@@ -1,0 +1,16 @@
+test.api ("cron.apis.AddJob")
+    .should ("add and schedule the job")
+    .given (
+    {
+        data:
+        {
+            expr: "0 0 * * *",
+            command: "nit test"
+        }
+    })
+    .before (s => s.context.server = new nit.new ("cron.Server"))
+    .mock ("context.server", "schedule")
+    .expectingPropertyToBeOfType ("mocks.0.invocations.0.args.0", "cron.Job")
+    .expectingPropertyToBeOfType ("context.response", "cron.responses.JobCreated")
+    .commit ()
+;
