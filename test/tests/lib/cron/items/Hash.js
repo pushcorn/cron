@@ -53,7 +53,7 @@ test.object ("cron.items.Hash")
         )
         .given ("H")
         .after (s => s.result.field = nit.new ("cron.fields.DayOfMonth"))
-        .after (s => s.result.field.entry = nit.new ("cron.Entry", "@hourly", "America/Indianapolis", "test-command"))
+        .after (s => s.result.field.job = nit.new ("cron.Job", 0, "@hourly", "test-command", "America/Indianapolis"))
         .expectingResultJsonToBe (`
         {
           "expr": "H",
@@ -63,7 +63,7 @@ test.object ("cron.items.Hash")
           "interval": 1
         }
         `)
-        .expectingPropertyToBe ("result.values", [23])
+        .expectingPropertyToBe ("result.values", [14])
         .expectingPropertyToBe ("result.hashCode", 2028396861)
         .commit ()
 

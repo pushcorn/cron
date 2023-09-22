@@ -7,5 +7,18 @@ test.api ("cron.apis.ListJobs")
     .expectingPropertyToBe ("context.response.jobs.length", 2)
     .expectingPropertyToBe ("context.response.jobs.0.id", 9)
     .expectingPropertyToBe ("context.response.jobs.1.id", 10)
+    .expectingMethodToReturnValue ("context.response.jobs.0.toPojo", null,
+    {
+        "command": "nit test",
+        "expr": "0 0 * * *",
+        "id": 9,
+        "lastExitCode": -1,
+        "nextRun": "",
+        "nextRunUtc": "",
+        "shell": true,
+        "timeUntilNextRun": 0,
+        "timeUntilNextRunHumanized": "",
+        "timezone": "America/Indianapolis"
+    })
     .commit ()
 ;

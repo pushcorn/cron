@@ -43,7 +43,7 @@ test.api ("cron.apis.GetJob")
                 "command": "nit test",
                 "expr": "0 0 * * *",
                 "id": 1,
-                "lastExitCode": 0,
+                "lastExitCode": -1,
                 "nextRun": "2023-09-03T00:00:00.000-04:00",
                 "nextRunUtc": "2023-09-03T04:00:00.000Z",
                 "shell": true,
