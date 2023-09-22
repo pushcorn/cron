@@ -63,7 +63,7 @@ test.object ("cron.items.Hash")
           "interval": 1
         }
         `)
-        .expectingPropertyToBe ("result.values", [14])
+        .expectingPropertyToBe ("result.values", [7])
         .expectingPropertyToBe ("result.hashCode", 2028396861)
         .commit ()
 

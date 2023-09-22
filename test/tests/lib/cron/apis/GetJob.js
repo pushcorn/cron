@@ -47,7 +47,10 @@ test.api ("cron.apis.GetJob")
                 "shell": true,
                 "timeUntilNextRun": 32700000,
                 "timeUntilNextRunHumanized": "9 hours and 5 minutes",
-                "timezone": "America/Indianapolis"
+                "timezone":
+                {
+                    "name": "America/Indianapolis"
+                }
             }
         })
         .commit ()

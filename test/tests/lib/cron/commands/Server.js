@@ -59,7 +59,7 @@ test.command ("cron.commands.Server")
         {
             let res = await http.fetchJson (`http://127.0.0.1:${s.port}`);
 
-            s.apiNames = res.spec.apis.map (a => a.name);
+            s.responses.getApiSpec = nit.trim (nit.toJson (res.spec, "  "));
         })
         .after (async (s) =>
         {
@@ -90,14 +90,7 @@ test.command ("cron.commands.Server")
         })
         .expectingPropertyToBe ("mocks.0.invocations.0.args.0", /cron.*started/)
         .expectingPropertyToBe ("port", /\d+/)
-        .expectingPropertyToBe ("apiNames",
-        [
-            "AddJob",
-            "GetApiSpec",
-            "GetJob",
-            "ListJobs",
-            "RemoveJob"
-        ])
+        .expectingPropertyToBe ("responses.getApiSpec", nit.trim (nit.readFile (nit.path.join (test.TEST_PROJECT_PATH, "resources/api-spec.json"))))
         .expectingPropertyToBe ("responses.addJob.job.timeUntilNextRun", 21900000)
         .expectingPropertyToBe ("spawnOutput", "[ERROR] The command 'test:not-found' was not found.\n")
         .expectingPropertyToBe ("responses.jobs.0",
@@ -111,7 +104,10 @@ test.command ("cron.commands.Server")
             "shell": true,
             "timeUntilNextRun": 3600000,
             "timeUntilNextRunHumanized": "1 hour",
-            "timezone": "Asia/Taipei"
+            "timezone":
+            {
+                "name": "Asia/Taipei"
+            }
         })
         .commit ()
 ;

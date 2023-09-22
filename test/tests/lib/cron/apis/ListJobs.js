@@ -18,7 +18,10 @@ test.api ("cron.apis.ListJobs")
         "shell": true,
         "timeUntilNextRun": 0,
         "timeUntilNextRunHumanized": "",
-        "timezone": nit.timezone ()
+        "timezone":
+        {
+            "name": nit.timezone ()
+        }
     })
     .commit ()
 ;
