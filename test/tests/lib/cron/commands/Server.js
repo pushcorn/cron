@@ -4,7 +4,7 @@ const http = nit.require ("http");
 test.command ("cron.commands.Server")
     .should ("start the cron server")
         .up (s => s.Server = nit.require ("cron.Server"))
-        .up (s => s.Runner = nit.require ("cron.Runner"))
+        .up (s => s.Job = nit.require ("cron.Job"))
         .up (s => s.global = global)
         .given ({ port: 0, stopTimeout: 0 })
         .mock ("Server.prototype", "writeLog")
@@ -34,7 +34,7 @@ test.command ("cron.commands.Server")
                 return setTimeout (cb, timeout);
             }
         })
-        .mock ("Runner", "spawn", function (command, opts)
+        .mock ("Job", "spawn", function (command, opts)
         {
             let { targetMethod, strategy: s } = this;
 
@@ -76,7 +76,7 @@ test.command ("cron.commands.Server")
 
             s.responses.addJob = res;
 
-            await s.server.runnerMap[1].stop ();
+            await s.server.jobMap[1].stop ();
         })
         .after (async (s) =>
         {
@@ -113,5 +113,31 @@ test.command ("cron.commands.Server")
             "timeUntilNextRunHumanized": "1 hour",
             "timezone": "Asia/Taipei"
         })
+        .commit ()
+;
+
+
+test.command ("cron.commands.Server")
+    .should ("start the specified jobs")
+        .up (s => s.Server = nit.require ("cron.Server"))
+        .up (s => s.global = global)
+        .given (
+        {
+            port: 0,
+            stopTimeout: 0,
+            jobs:
+            {
+                expr: "0 2 * * *",
+                command: "command-not-found"
+            }
+        })
+        .mock ("Server.prototype", "writeLog")
+        .mock ("Server.prototype", "schedule")
+        .deinit (async (s) =>
+        {
+            await s.server?.stop ();
+        })
+        .expectingPropertyToBe ("mocks.1.invocations.length", 1)
+        .expectingPropertyToBeOfType ("mocks.1.invocations.0.args.0", "cron.Job")
         .commit ()
 ;

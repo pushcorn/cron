@@ -11,9 +11,7 @@ test.api ("cron.apis.GetJob")
 
     .should ("return the schedule job")
         .given ({}, { pathParams: { id: 1 } })
-        .up (s => s.Runner = nit.require ("cron.Runner"))
         .up (s => s.global = global)
-        .mock ("Runner", "start")
         .mock ("global.Date", "now", function ()
         {
             let { iteration, strategy: s } = this;

@@ -2,7 +2,6 @@ nit.require ("cron.Server").defaults ("stopTimeout", 0);
 
 
 nit.test.Strategy
-    .memo ("Humanize", () => nit.require ("nit.utils.Humanize"))
     .method ("expectingResultJsonToBe", function (json, ...otherProperties)
     {
         let self = this;
