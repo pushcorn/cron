@@ -201,15 +201,15 @@
         },
         {
           "spec": "[method]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "[path]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "[description]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "request",
@@ -217,7 +217,7 @@
         },
         {
           "spec": "responses...",
-          "type": "string+"
+          "type": "string?"
         }
       ]
     },
@@ -255,15 +255,15 @@
         },
         {
           "spec": "name",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "condition",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "options",
-          "type": "object+"
+          "type": "object?"
         }
       ]
     },
@@ -276,11 +276,11 @@
         },
         {
           "spec": "[type]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "[description]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "[defval]",
@@ -288,7 +288,7 @@
         },
         {
           "spec": "constraints...",
-          "type": "Constraint+"
+          "type": "Constraint?"
         }
       ]
     },
@@ -377,7 +377,7 @@
         },
         {
           "spec": "fields...",
-          "type": "Field+",
+          "type": "Field?",
           "description": "The model fields."
         }
       ]
@@ -391,11 +391,11 @@
         },
         {
           "spec": "[type]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "[description]",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "[defval]",
@@ -403,15 +403,15 @@
         },
         {
           "spec": "label",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "source",
-          "type": "string+"
+          "type": "string?"
         },
         {
           "spec": "constraints...",
-          "type": "Constraint+"
+          "type": "Constraint?"
         }
       ]
     },
@@ -420,7 +420,7 @@
       "fields": [
         {
           "spec": "parameters...",
-          "type": "Parameter+"
+          "type": "Parameter?"
         }
       ]
     },
@@ -439,17 +439,17 @@
         },
         {
           "spec": "[message]",
-          "type": "string+",
+          "type": "string?",
           "description": "The response status message."
         },
         {
           "spec": "[code]",
-          "type": "string+",
+          "type": "string?",
           "description": "The error code that the response represents."
         },
         {
           "spec": "fields...",
-          "type": "Field+",
+          "type": "Field?",
           "description": "The response fields."
         }
       ]
@@ -1082,17 +1082,17 @@
         },
         {
           "spec": "constraint",
-          "type": "string?",
+          "type": "string",
           "description": "The constraint that caused error."
         },
         {
           "spec": "code",
-          "type": "string?",
+          "type": "string",
           "description": "The error code."
         },
         {
           "spec": "message",
-          "type": "string?",
+          "type": "string",
           "description": "The error message."
         }
       ]
