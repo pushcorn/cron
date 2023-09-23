@@ -317,22 +317,9 @@
         },
         {
           "spec": "shell",
-          "type": "any",
+          "type": "boolean|string",
           "description": "Use shell to run the command.",
-          "defval": true,
-          "constraints": [
-            {
-              "type": "type",
-              "code": "error.invalid_type",
-              "message": "The value of '%{property.name}' should be one of the following type: %{constraint.types.join (', ')}. (Given: %{valueType})",
-              "options": {
-                "types": [
-                  "boolean",
-                  "string"
-                ]
-              }
-            }
-          ]
+          "defval": true
         },
         {
           "spec": "env",
