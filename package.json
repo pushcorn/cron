@@ -1,6 +1,6 @@
 {
     "name": "@pushcorn/cron",
-    "version": "0.2.1",
+    "version": "1.0.0",
     "description": "The cron module for nit.",
     "license": "ISC",
     "files": [
@@ -10,7 +10,7 @@
         "resources/**"
     ],
     "peerDependencies": {
-        "@pushcorn/nit": "github:pushcorn/nit#semver:^1.6.0"
+        "@pushcorn/nit": "github:pushcorn/nit#semver:^2.0.0"
     },
     "peerDependenciesMeta": {
         "@pushcorn/nit": {
