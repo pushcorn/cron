@@ -16,6 +16,11 @@ test.command ("cron.commands.Server")
             {
                 s.now = nit.Date ("2023-09-18 14:55", "America/Indianapolis").getTime ();
             }
+            else
+            if (iteration == 9)
+            {
+                s.now = nit.Date ("2023-09-18 15:00", "America/Indianapolis").getTime ();
+            }
 
             return s.now;
         })
@@ -102,8 +107,8 @@ test.command ("cron.commands.Server")
             "nextRun": "2023-09-19T10:00:00.000+08:00",
             "nextRunUtc": "2023-09-19T02:00:00.000Z",
             "shell": true,
-            "timeUntilNextRun": 3600000,
-            "timeUntilNextRunHumanized": "1 hour",
+            "timeUntilNextRun": 25200000,
+            "timeUntilNextRunHumanized": "7 hours",
             "timezone":
             {
                 "name": "Asia/Taipei"

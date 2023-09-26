@@ -448,6 +448,27 @@ test.method ("cron.Job", "start")
 ;
 
 
+test.method ("cron.Job", "updateInfo")
+    .should ("updates the job status")
+        .up (s => s.createArgs =
+        {
+            expr: "0 0 * * *",
+            command: "nit test:not-found",
+            timezone: "America/Indianapolis",
+            env:
+            {
+                NIT_DEBUG: "cron.*"
+            }
+        })
+        .up (s => s.Date = Date)
+        .before (s => s.object.next (nit.Date ("2023-03-11 23:02:00", "America/Indianapolis")))
+        .mock ("Date", "now", nit.Date ("2023-03-11 23:10:00", "America/Indianapolis") * 1, { iterations: 1 })
+        .returnsInstanceOf ("cron.Job")
+        .expectingPropertyToBe ("result.timeUntilNextRunHumanized", "50 minutes")
+        .commit ()
+;
+
+
 test.method ("cron.Job", "run")
     .should ("run the job command")
         .up (s => s.createArgs =
@@ -462,6 +483,16 @@ test.method ("cron.Job", "run")
         .mock ("class", "spawn", function ()
         {
             return {
+                stdout:
+                {
+                    on: () => {}
+                }
+                ,
+                stderr:
+                {
+                    on: () => {}
+                }
+                ,
                 on: (event, listener) =>
                 {
                     listener (9);
@@ -473,7 +504,6 @@ test.method ("cron.Job", "run")
         .expectingPropertyToContain ("mocks.0.invocations.0.args.1",
         {
             shell: true,
-            stdio: "inherit",
             detached: true,
             env:
             {
@@ -481,6 +511,60 @@ test.method ("cron.Job", "run")
             }
         })
         .expectingPropertyToBe ("object.lastExitCode", 9)
+        .commit ()
+
+    .should ("log the messages from stdout and stderr")
+        .up (s => s.createArgs =
+        {
+            expr: "0 0 * * *",
+            command: "nit test:not-found",
+            env:
+            {
+                NIT_DEBUG: "cron.*"
+            }
+        })
+        .mock ("class", "spawn", function ()
+        {
+            return {
+                stdout:
+                {
+                    on: (event, listener) =>
+                    {
+                        listener (Buffer.from ("stdout"));
+                    }
+                }
+                ,
+                stderr:
+                {
+                    on: (event, listener) =>
+                    {
+                        listener (Buffer.from ("stderr"));
+                    }
+                }
+                ,
+                on: (event, listener) =>
+                {
+                    listener (10);
+                }
+            };
+        })
+        .mock ("object.server", "info")
+        .mock ("object.server", "error")
+        .before (s => s.object.server = nit.new ("cron.Server"))
+        .after (s => s.object.stop ())
+        .expectingPropertyToBe ("mocks.0.invocations.0.args.0", "nit test:not-found")
+        .expectingPropertyToBe ("mocks.1.invocations.0.args.0", "stdout")
+        .expectingPropertyToBe ("mocks.2.invocations.0.args.0", "stderr")
+        .expectingPropertyToContain ("mocks.0.invocations.0.args.1",
+        {
+            shell: true,
+            detached: true,
+            env:
+            {
+                NIT_DEBUG: "cron.*"
+            }
+        })
+        .expectingPropertyToBe ("object.lastExitCode", 10)
         .commit ()
 
     .should ("catch the exception and set job's lastExitCode to -1")
@@ -496,6 +580,16 @@ test.method ("cron.Job", "run")
         .mock ("class", "spawn", function ()
         {
             return {
+                stdout:
+                {
+                    on: () => {}
+                }
+                ,
+                stderr:
+                {
+                    on: () => {}
+                }
+                ,
                 on: () =>
                 {
                     throw new Error ("ERR!");
