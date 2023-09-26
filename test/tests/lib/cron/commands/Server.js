@@ -136,7 +136,7 @@ test.command ("cron.commands.Server")
         .mock ("Server.prototype", "schedule")
         .deinit (async (s) =>
         {
-            await s.server?.stop ();
+            await s.object.server?.stop ();
         })
         .expectingPropertyToBe ("mocks.1.invocations.length", 1)
         .expectingPropertyToBeOfType ("mocks.1.invocations.0.args.0", "cron.Job")
