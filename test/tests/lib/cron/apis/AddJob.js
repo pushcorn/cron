@@ -8,8 +8,8 @@ test.api ("cron.apis.AddJob")
             command: "nit test"
         }
     })
-    .before (s => s.context.server = new nit.new ("cron.Server"))
-    .mock ("context.server", "schedule")
+    .before (s => s.context.server = new nit.new ("http.Server"))
+    .mock ("Scheduler.prototype", "schedule")
     .expectingPropertyToBeOfType ("mocks.0.invocations.0.args.0", "cron.Job")
     .expectingPropertyToBeOfType ("context.response", "cron.responses.JobCreated")
     .commit ()

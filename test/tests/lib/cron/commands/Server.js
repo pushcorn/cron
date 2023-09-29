@@ -3,7 +3,7 @@ const http = nit.require ("http");
 
 test.command ("cron.commands.Server")
     .should ("start the cron server")
-        .up (s => s.Server = nit.require ("cron.Server"))
+        .up (s => s.Server = nit.require ("http.Server"))
         .up (s => s.Job = nit.require ("cron.Job"))
         .up (s => s.global = global)
         .given ({ port: 0, stopTimeout: 0 })
@@ -59,6 +59,7 @@ test.command ("cron.commands.Server")
             s.server = await s.object.server.ready;
             s.port = s.server.realPort;
             s.responses = {};
+            s.scheduler = s.Scheduler.get (s.server);
         })
         .after (async (s) =>
         {
@@ -81,7 +82,7 @@ test.command ("cron.commands.Server")
 
             s.responses.addJob = res;
 
-            await s.server.jobMap[1].stop ();
+            await s.scheduler.jobMap[1].stop ();
         })
         .after (async (s) =>
         {
@@ -120,7 +121,7 @@ test.command ("cron.commands.Server")
 
 test.command ("cron.commands.Server")
     .should ("start the specified jobs")
-        .up (s => s.Server = nit.require ("cron.Server"))
+        .up (s => s.Server = nit.require ("http.Server"))
         .up (s => s.global = global)
         .given (
         {
@@ -133,7 +134,7 @@ test.command ("cron.commands.Server")
             }
         })
         .mock ("Server.prototype", "writeLog")
-        .mock ("Server.prototype", "schedule")
+        .mock ("Scheduler.prototype", "schedule")
         .deinit (async (s) =>
         {
             await s.object.server?.stop ();

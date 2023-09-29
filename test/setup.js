@@ -1,7 +1,8 @@
-nit.require ("cron.Server").defaults ("stopTimeout", 0);
+nit.require ("http.Server").defaults ("stopTimeout", 0);
 
 
 nit.test.Strategy
+    .memo ("Scheduler", () => nit.require ("cron.Scheduler"))
     .method ("expectingResultJsonToBe", function (json, ...otherProperties)
     {
         let self = this;

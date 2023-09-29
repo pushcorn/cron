@@ -1,7 +1,14 @@
-test.method ("cron.Server", "stop")
+test.method ("cron.Scheduler", "createServiceProviderEntry", true)
+    .should ("configure the scheduler")
+        .given (nit.new ("http.Server"))
+        .returnsInstanceOf ("cron.Scheduler.ServiceProviderEntry")
+        .expectingPropertyToBeOfType ("result.instance.server", "http.Server")
+        .commit ()
+;
+
+
+test.method ("cron.Scheduler", "stop")
     .should ("stop the scheduled jobs")
-    .mock ("object", "writeLog")
-    .before (s => s.object.ready.resolve ())
     .before (s => s.object.jobMap[1] =
     {
         stop: () => s.jobStopCalled = true
@@ -11,7 +18,7 @@ test.method ("cron.Server", "stop")
 ;
 
 
-test.method ("cron.Server", "schedule")
+test.method ("cron.Scheduler", "schedule")
     .should ("start the job")
     .up (s => s.Job = nit.require ("cron.Job"))
     .up (s => s.jobOne = nit.new ("cron.Job",
@@ -31,7 +38,7 @@ test.method ("cron.Server", "schedule")
 ;
 
 
-test.method ("cron.Server", "unschedule")
+test.method ("cron.Scheduler", "unschedule")
     .should ("ignore the invalid job ID")
         .given (3)
         .returns ()
@@ -50,7 +57,7 @@ test.method ("cron.Server", "unschedule")
 ;
 
 
-test.method ("cron.Server", "getJob")
+test.method ("cron.Scheduler", "getJob")
     .should ("ignore the invalid job ID")
         .given (3)
         .returns ()

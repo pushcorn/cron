@@ -548,9 +548,9 @@ test.method ("cron.Job", "run")
                 }
             };
         })
-        .mock ("object.server", "info")
-        .mock ("object.server", "error")
-        .before (s => s.object.server = nit.new ("cron.Server"))
+        .mock ("object.logger", "info")
+        .mock ("object.logger", "error")
+        .before (s => s.object.logger = nit.new ("nit.utils.Logger"))
         .after (s => s.object.stop ())
         .expectingPropertyToBe ("mocks.0.invocations.0.args.0", "nit test:not-found")
         .expectingPropertyToBe ("mocks.1.invocations.0.args.0", "stdout")
