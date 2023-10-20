@@ -110,10 +110,7 @@ test.command ("cron.commands.Server")
             "shell": true,
             "timeUntilNextRun": 25200000,
             "timeUntilNextRunHumanized": "7 hours",
-            "timezone":
-            {
-                "name": "Asia/Taipei"
-            }
+            "timezone": "Asia/Taipei"
         })
         .commit ()
 ;

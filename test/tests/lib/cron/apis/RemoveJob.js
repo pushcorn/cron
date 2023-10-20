@@ -44,10 +44,7 @@ test.api ("cron.apis.RemoveJob")
                 "shell": true,
                 "timeUntilNextRun": 32700000,
                 "timeUntilNextRunHumanized": "9 hours and 5 minutes",
-                "timezone":
-                {
-                    "name": "America/Indianapolis"
-                }
+                "timezone": "America/Indianapolis"
             }
         })
         .commit ()
