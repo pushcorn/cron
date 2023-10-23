@@ -59,7 +59,7 @@
       "name": "GetJob",
       "method": "GET",
       "path": "/jobs/:id",
-      "description": "Get the scheduled job.",
+      "description": "Get the details of a scheduled job.",
       "request": {
         "parameters": [
           {
@@ -99,13 +99,13 @@
       "name": "RemoveJob",
       "method": "DELETE",
       "path": "/jobs/:id",
-      "description": "Add a cron job.",
+      "description": "Remove a cron job.",
       "request": {
         "parameters": [
           {
             "spec": "<id>",
             "type": "integer",
-            "description": "The job ID.",
+            "description": "The job ID to be removed.",
             "source": "path",
             "constraints": [
               {
