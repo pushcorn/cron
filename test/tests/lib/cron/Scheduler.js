@@ -2,7 +2,7 @@ test.method ("cron.Scheduler", "createServiceProviderEntry", true)
     .should ("configure the scheduler")
         .given (nit.new ("http.Server"))
         .returnsInstanceOf ("cron.Scheduler.ServiceProviderEntry")
-        .expectingPropertyToBeOfType ("result.instance.server", "http.Server")
+        .expectingPropertyToBeOfType ("result.instance.owner", "http.Server")
         .commit ()
 ;
 
