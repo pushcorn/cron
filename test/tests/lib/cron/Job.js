@@ -513,6 +513,48 @@ test.method ("cron.Job", "run")
         .expectingPropertyToBe ("object.lastExitCode", 9)
         .commit ()
 
+    .should ("run the command without forking if the command is nit*")
+        .up (s => nit.require ("nit.Command")
+            .defineSubclass ("test.commands.Echo")
+            .defineInput (Input => Input.option ("<message>"))
+            .onRun (ctx => ctx.input.message)
+        )
+        .up (s => s.createArgs =
+        {
+            expr: "0 0 * * *",
+            command: "nit* test:echo 'hello world'",
+            env:
+            {
+                NIT_DEBUG: "cron.*"
+            }
+        })
+        .before (s => s.object.logger = nit.new ("nit.utils.Logger"))
+        .after (s => s.object.stop ())
+        .mock ("object.logger", "info")
+        .expectingPropertyToBe ("mocks.0.invocations.0.args.0", "hello world")
+        .commit ()
+
+    .should ("not log empty nit* command result")
+        .up (s => nit.require ("nit.Command")
+            .defineSubclass ("test.commands.Echo2")
+            .defineInput (Input => Input.option ("<message>"))
+            .onRun (() => {})
+        )
+        .up (s => s.createArgs =
+        {
+            expr: "0 0 * * *",
+            command: "nit* test:echo2 'hello world'",
+            env:
+            {
+                NIT_DEBUG: "cron.*"
+            }
+        })
+        .before (s => s.object.logger = nit.new ("nit.utils.Logger"))
+        .after (s => s.object.stop ())
+        .mock ("object.logger", "info")
+        .expectingPropertyToBe ("mocks.0.invocations.length", 0)
+        .commit ()
+
     .should ("log the messages from stdout and stderr")
         .up (s => s.createArgs =
         {

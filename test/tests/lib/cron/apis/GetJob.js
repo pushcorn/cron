@@ -33,7 +33,6 @@ test.api ("cron.apis.GetJob")
         })))
         .after (s => s.context.server.ready.resolve ())
         .after (s => s.context.server.stop ())
-        .after (s => nit.log (s.Scheduler.serviceProviderEntries))
         .after (s => s.Scheduler.get (s.context.server).jobs[0].stop ())
         .expectingPropertyToBeOfType ("context.response", "cron.responses.JobReturned")
         .expectingMethodToReturnValue ("context.response.toPojo", null,
