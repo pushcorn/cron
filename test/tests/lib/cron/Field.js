@@ -77,7 +77,7 @@ test.method ("cron.Field", "getValueForDate")
     .should ("use the current date if custom date was not given")
         .up (s => s.class = nit.require ("cron.fields.DayOfWeek"))
         .given ()
-        .returns (cron.getDateAsUtc ().getDay ())
+        .returns (cron.getDateAsUtc ().getUTCDay ())
         .commit ()
 ;
 
