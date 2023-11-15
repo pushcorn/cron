@@ -1,7 +1,10 @@
 test.object ("cron.Api.Context", true, "scheduler")
     .should ("have a scheduler getter")
-        .given (nit.require ("http.Context").new ())
-        .before (s => s.args[0].server = nit.new ("http.Server"))
+        .up (s => s.server = nit.new ("http.Server"))
+        .up (s => s.args = nit.require ("http.Context")
+            .new ()
+            .registerScope ("server", s.server)
+        )
         .returnsInstanceOf ("cron.Scheduler")
         .commit ()
 ;

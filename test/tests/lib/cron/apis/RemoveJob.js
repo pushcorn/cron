@@ -5,7 +5,6 @@ test.api ("cron.apis.RemoveJob")
 
     .should ("return error if the job was not found")
         .given ({}, { pathParams: { id: 1 } })
-        .before (s => s.context.server = new nit.new ("http.Server"))
         .expectingPropertyToBeOfType ("context.response", "cron.responses.JobNotFound")
         .commit ()
 
@@ -23,7 +22,6 @@ test.api ("cron.apis.RemoveJob")
 
             return s.now;
         })
-        .before (s => s.context.server = new nit.new ("http.Server"))
         .before (s => s.Scheduler.get (s.context.server).schedule (nit.new ("cron.Job",
         {
             expr: "0 0 * * *",

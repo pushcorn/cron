@@ -24,7 +24,6 @@ test.api ("cron.apis.GetJob")
             return s.now;
         })
         .mock ("context.server", "writeLog")
-        .before (s => s.context.server = new nit.new ("http.Server"))
         .before (s => s.Scheduler.get (s.context.server).schedule (nit.new ("cron.Job",
         {
             expr: "0 0 * * *",

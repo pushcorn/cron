@@ -8,7 +8,6 @@ test.api ("cron.apis.AddJob")
                 command: "nit test"
             }
         })
-        .before (s => s.context.server = new nit.new ("http.Server"))
         .mock ("Scheduler.prototype", "schedule")
         .expectingPropertyToBeOfType ("mocks.0.invocations.0.args.0", "cron.Job")
         .expectingPropertyToBeOfType ("context.response", "cron.responses.JobCreated")
@@ -24,7 +23,6 @@ test.api ("cron.apis.AddJob")
                 timezone: "abcd"
             }
         })
-        .before (s => s.context.server = new nit.new ("http.Server"))
         .expectingPropertyToBeOfType ("context.response", "http.responses.ValidationFailed")
         .expectingPropertyToBe ("context.response.violations.0.code", "error.invalid_timezone")
         .commit ()
