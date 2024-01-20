@@ -1,8 +1,18 @@
+const POSTGRESQL_TEST_DIR = nit.path.join (nit.HOME, "packages/postgresql/test");
+
 nit.require ("http.Server").defaults ("stopTimeout", 0);
+nit.test.Strategy.Project.resetDirs ();
+nit.ASSET_PATHS.push (POSTGRESQL_TEST_DIR);
+["setup.js", "setup.local.js"].forEach (f => nit.require (nit.path.join (POSTGRESQL_TEST_DIR, f)));
 
 
 nit.test.Strategy
-    .memo ("Scheduler", () => nit.require ("cron.Scheduler"))
+    .memo ("cron", true, false, () => nit.require ("cron"))
+    .memo ("Server", true, false, () => nit.require ("cron.Server"))
+    .memo ("Query", true, false, () => nit.require ("postgresql.Query"))
+    .memo ("uuid1", () => "11111111-1111-1111-1111-111111111111")
+    .memo ("time1", () => new Date (2024, 0, 17, 15, 30))
+    .memo ("timezone1", () => "America/Indianapolis")
     .method ("expectingResultJsonToBe", function (json, ...otherProperties)
     {
         let self = this;
