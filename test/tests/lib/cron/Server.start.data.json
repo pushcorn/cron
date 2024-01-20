@@ -1,0 +1,305 @@
+{
+    "expects": [
+        {
+            "statement": "BEGIN",
+            "result": {
+                "command": "BEGIN",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        },
+        {
+            "statement": "SET CONSTRAINTS ALL DEFERRED",
+            "result": {
+                "command": "SET",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        },
+        {
+            "statement": "SELECT *\nFROM \"pg_tables\"\nWHERE \"tablename\" = 'cron_jobs'\nLIMIT 1",
+            "result": {
+                "command": "SELECT",
+                "rows": [],
+                "rowCount": 0,
+                "fields": [
+                    {
+                        "name": "schemaname",
+                        "dataTypeID": 19,
+                        "format": "text"
+                    },
+                    {
+                        "name": "tablename",
+                        "dataTypeID": 19,
+                        "format": "text"
+                    },
+                    {
+                        "name": "tableowner",
+                        "dataTypeID": 19,
+                        "format": "text"
+                    },
+                    {
+                        "name": "tablespace",
+                        "dataTypeID": 19,
+                        "format": "text"
+                    },
+                    {
+                        "name": "hasindexes",
+                        "dataTypeID": 16,
+                        "format": "text"
+                    },
+                    {
+                        "name": "hasrules",
+                        "dataTypeID": 16,
+                        "format": "text"
+                    },
+                    {
+                        "name": "hastriggers",
+                        "dataTypeID": 16,
+                        "format": "text"
+                    },
+                    {
+                        "name": "rowsecurity",
+                        "dataTypeID": 16,
+                        "format": "text"
+                    }
+                ]
+            }
+        },
+        {
+            "statement": "CREATE TABLE IF NOT EXISTS \"cron_jobs\"\n(\n    \"id\" UUID NOT NULL DEFAULT UUID_GENERATE_V4 (),\n    \"expr\" TEXT NOT NULL,\n    \"command\" TEXT NOT NULL,\n    \"timezone\" TEXT,\n    \"status\" TEXT DEFAULT 'scheduled',\n    \"error\" TEXT,\n    \"output\" TEXT,\n    \"duration\" INTEGER DEFAULT 0,\n    \"exitCode\" INTEGER DEFAULT 0,\n    \"nextRun\" TEXT,\n    \"nextRunUtc\" TIMESTAMP WITHOUT TIME ZONE,\n    \"mtime\" TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW (),\n    PRIMARY KEY (\"id\")\n)",
+            "result": {
+                "command": "CREATE",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        },
+        {
+            "statement": "CREATE INDEX IF NOT EXISTS \"idx_cron_jobs_nextRunUtc\"\nON \"cron_jobs\" (\"nextRunUtc\")",
+            "result": {
+                "command": "CREATE",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        },
+        {
+            "statement": "INSERT INTO \"cron_jobs\" (\"id\", \"expr\", \"command\", \"timezone\", \"status\", \"mtime\")\nVALUES ('11111111-1111-1111-1111-111111111111', '0 0 * * *', 'shell echo test', 'UTC', 'running', '2024-01-17T20:30:00.000Z')",
+            "result": {
+                "command": "INSERT",
+                "rows": [],
+                "rowCount": 1,
+                "fields": []
+            }
+        },
+        {
+            "statement": "SELECT *\nFROM \"cron_jobs\"",
+            "result": {
+                "command": "SELECT",
+                "rows": [
+                    {
+                        "id": "11111111-1111-1111-1111-111111111111",
+                        "expr": "0 0 * * *",
+                        "command": "shell echo test",
+                        "timezone": "UTC",
+                        "status": "running",
+                        "error": null,
+                        "output": null,
+                        "duration": 0,
+                        "exitCode": 0,
+                        "nextRun": null,
+                        "nextRunUtc": null,
+                        "mtime": "2024-01-17T20:30:00.000Z"
+                    }
+                ],
+                "rowCount": 1,
+                "fields": [
+                    {
+                        "name": "id",
+                        "dataTypeID": 2950,
+                        "format": "text"
+                    },
+                    {
+                        "name": "expr",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "command",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "timezone",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "status",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "error",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "output",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "duration",
+                        "dataTypeID": 23,
+                        "format": "text"
+                    },
+                    {
+                        "name": "exitCode",
+                        "dataTypeID": 23,
+                        "format": "text"
+                    },
+                    {
+                        "name": "nextRun",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "nextRunUtc",
+                        "dataTypeID": 1114,
+                        "format": "text"
+                    },
+                    {
+                        "name": "mtime",
+                        "dataTypeID": 1114,
+                        "format": "text"
+                    }
+                ]
+            }
+        },
+        {
+            "statement": "SELECT *\nFROM \"cron_jobs\"\nWHERE \"id\" = '11111111-1111-1111-1111-111111111111'\nLIMIT 1",
+            "result": {
+                "command": "SELECT",
+                "rows": [
+                    {
+                        "id": "11111111-1111-1111-1111-111111111111",
+                        "expr": "0 0 * * *",
+                        "command": "shell echo test",
+                        "timezone": "UTC",
+                        "status": "running",
+                        "error": null,
+                        "output": null,
+                        "duration": 0,
+                        "exitCode": 0,
+                        "nextRun": null,
+                        "nextRunUtc": null,
+                        "mtime": "2024-01-17T20:30:00.000Z"
+                    }
+                ],
+                "rowCount": 1,
+                "fields": [
+                    {
+                        "name": "id",
+                        "dataTypeID": 2950,
+                        "format": "text"
+                    },
+                    {
+                        "name": "expr",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "command",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "timezone",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "status",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "error",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "output",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "duration",
+                        "dataTypeID": 23,
+                        "format": "text"
+                    },
+                    {
+                        "name": "exitCode",
+                        "dataTypeID": 23,
+                        "format": "text"
+                    },
+                    {
+                        "name": "nextRun",
+                        "dataTypeID": 25,
+                        "format": "text"
+                    },
+                    {
+                        "name": "nextRunUtc",
+                        "dataTypeID": 1114,
+                        "format": "text"
+                    },
+                    {
+                        "name": "mtime",
+                        "dataTypeID": 1114,
+                        "format": "text"
+                    }
+                ]
+            }
+        },
+        {
+            "statement": "UPDATE \"cron_jobs\"\nSET \"status\" = 'scheduled', \"nextRun\" = '2024-01-18T00:00:00.000', \"mtime\" = '2024-01-17T20:30:00.000Z', \"nextRunUtc\" = '2024-01-18T00:00:00.000Z'\nWHERE \"id\" = '11111111-1111-1111-1111-111111111111'",
+            "result": {
+                "command": "UPDATE",
+                "rows": [],
+                "rowCount": 1,
+                "fields": []
+            }
+        },
+        {
+            "statement": "LISTEN \"cron_jobs\"",
+            "result": {
+                "command": "LISTEN",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        },
+        {
+            "statement": "UNLISTEN \"cron_jobs\"",
+            "result": {
+                "command": "UNLISTEN",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        },
+        {
+            "statement": "ROLLBACK",
+            "result": {
+                "command": "ROLLBACK",
+                "rows": [],
+                "rowCount": 0,
+                "fields": []
+            }
+        }
+    ]
+}
