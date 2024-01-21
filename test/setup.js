@@ -30,6 +30,18 @@ nit.test.Strategy
             .snapshot ()
         ;
     })
+    .method ("setupTestForCommand", function ()
+    {
+        return this
+            .useMockDatabase ()
+            .before (s => s.context.registerService (s.db))
+            .mock ("db", "disconnect")
+            .mock (nit, "timezone", function () { return this.strategy.timezone1; })
+            .deinit (s => s.mocks[0].restore ())
+            .deinit (s => s.db.disconnect ())
+            .snapshot ()
+        ;
+    })
     .method ("expectingResultJsonToBe", function (json, ...otherProperties)
     {
         let self = this;

@@ -1,10 +1,70 @@
 {
   "apis": [
     {
-      "name": "AddJob",
-      "method": "POST",
-      "path": "/jobs",
-      "description": "Add a cron job.",
+      "name": "cron.apis.GetJob",
+      "requestMethod": "GET",
+      "requestPath": "/cron/jobs/:id",
+      "description": "Get the details of a scheduled job.",
+      "request": {
+        "parameters": [
+          {
+            "spec": "<id>",
+            "type": "string",
+            "description": "The job ID.",
+            "source": "path"
+          }
+        ]
+      },
+      "responses": [
+        "cron.responses.JobReturned",
+        "cron.responses.JobNotFound",
+        "http.responses.ValidationFailed"
+      ]
+    },
+    {
+      "name": "cron.apis.GetStats",
+      "requestMethod": "GET",
+      "requestPath": "/cron/stats",
+      "description": "Get the scheduler stats.",
+      "responses": [
+        "cron.responses.StatsReturned"
+      ]
+    },
+    {
+      "name": "cron.apis.ListJobs",
+      "requestMethod": "GET",
+      "requestPath": "/cron/jobs",
+      "description": "List scheduled jobs.",
+      "responses": [
+        "cron.responses.JobsReturned"
+      ]
+    },
+    {
+      "name": "cron.apis.RemoveJob",
+      "requestMethod": "DELETE",
+      "requestPath": "/cron/jobs/:id",
+      "description": "Unschedule a cron job.",
+      "request": {
+        "parameters": [
+          {
+            "spec": "<id>",
+            "type": "string",
+            "description": "The job ID.",
+            "source": "path"
+          }
+        ]
+      },
+      "responses": [
+        "cron.responses.JobRemoved",
+        "cron.responses.JobNotFound",
+        "http.responses.ValidationFailed"
+      ]
+    },
+    {
+      "name": "cron.apis.ScheduleJob",
+      "requestMethod": "POST",
+      "requestPath": "/cron/jobs",
+      "description": "Schedule a cron job.",
       "request": {
         "parameters": [
           {
@@ -29,7 +89,7 @@
           {
             "spec": "[timezone]",
             "type": "string",
-            "description": "The timezone in which the job should be run.",
+            "description": "The time zone.",
             "source": "form",
             "constraints": [
               {
@@ -42,164 +102,171 @@
         ]
       },
       "responses": [
-        "JobCreated",
-        "ValidationFailed"
+        "cron.responses.JobScheduled",
+        "http.responses.ValidationFailed"
       ]
     },
     {
-      "name": "GetApiSpec",
-      "method": "GET",
-      "path": "/",
+      "name": "cron.apis.UpdateJob",
+      "requestMethod": "PUT",
+      "requestPath": "/cron/jobs/:id",
+      "description": "Update a cron job.",
+      "request": {
+        "parameters": [
+          {
+            "spec": "<id>",
+            "type": "string",
+            "description": "The job ID.",
+            "source": "path"
+          },
+          {
+            "spec": "expr",
+            "type": "string?",
+            "description": "The cron expression.",
+            "source": "form",
+            "constraints": [
+              {
+                "type": "cron:expression",
+                "code": "error.invalid_expr",
+                "message": "The cron expression '%{value}' is invalid. (Cause: %{cause})"
+              }
+            ]
+          },
+          {
+            "spec": "command",
+            "type": "string?",
+            "description": "The command to run.",
+            "source": "form"
+          },
+          {
+            "spec": "timezone",
+            "type": "string?",
+            "description": "The time zone.",
+            "source": "form",
+            "constraints": [
+              {
+                "type": "timezone",
+                "code": "error.invalid_timezone",
+                "message": "The timezone '%{value}' is invalid."
+              }
+            ]
+          }
+        ]
+      },
+      "responses": [
+        "cron.responses.JobUpdated",
+        "cron.responses.JobNotFound",
+        "http.responses.ValidationFailed"
+      ]
+    },
+    {
+      "name": "http.apis.GetApiSpec",
+      "requestMethod": "GET",
+      "requestPath": "/",
       "description": "Get the API specification.",
       "responses": [
-        "ApiSpecReturned"
-      ]
-    },
-    {
-      "name": "GetJob",
-      "method": "GET",
-      "path": "/jobs/:id",
-      "description": "Get the details of a scheduled job.",
-      "request": {
-        "parameters": [
-          {
-            "spec": "<id>",
-            "type": "integer",
-            "description": "The job ID.",
-            "source": "path",
-            "constraints": [
-              {
-                "type": "min",
-                "code": "error.less_than_min",
-                "message": "The minimum value of '%{property.name}' is '%{constraint.min}'.",
-                "options": {
-                  "min": 1
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "responses": [
-        "JobReturned",
-        "JobNotFound",
-        "ValidationFailed"
-      ]
-    },
-    {
-      "name": "ListJobs",
-      "method": "GET",
-      "path": "/jobs",
-      "description": "List scheduled jobs.",
-      "responses": [
-        "JobListReturned"
-      ]
-    },
-    {
-      "name": "RemoveJob",
-      "method": "DELETE",
-      "path": "/jobs/:id",
-      "description": "Remove a cron job.",
-      "request": {
-        "parameters": [
-          {
-            "spec": "<id>",
-            "type": "integer",
-            "description": "The job ID to be removed.",
-            "source": "path",
-            "constraints": [
-              {
-                "type": "min",
-                "code": "error.less_than_min",
-                "message": "The minimum value of '%{property.name}' is '%{constraint.min}'.",
-                "options": {
-                  "min": 1
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "responses": [
-        "JobRemoved",
-        "JobNotFound",
-        "ValidationFailed"
+        "http.responses.ApiSpecReturned"
       ]
     }
   ],
   "responses": [
     {
-      "name": "ApiSpecReturned",
-      "status": 200,
-      "message": "The API spec has been returned.",
-      "fields": [
-        {
-          "spec": "<spec>",
-          "type": "ApiSpec"
-        }
-      ]
-    },
-    {
-      "name": "JobCreated",
-      "status": 201,
-      "message": "The job has been created.",
-      "fields": [
-        {
-          "spec": "<job>",
-          "type": "Job",
-          "description": "The created job."
-        }
-      ]
-    },
-    {
-      "name": "JobListReturned",
-      "status": 200,
-      "message": "The job list has been returned.",
-      "fields": [
-        {
-          "spec": "[jobs...]",
-          "type": "Job"
-        }
-      ]
-    },
-    {
-      "name": "JobNotFound",
+      "name": "cron.responses.JobNotFound",
       "status": 404,
-      "message": "The job was not found."
+      "message": "The job was not found.",
+      "code": "error.job_not_found"
     },
     {
-      "name": "JobRemoved",
+      "name": "cron.responses.JobRemoved",
       "status": 200,
       "message": "The job has been removed.",
       "fields": [
         {
           "spec": "<job>",
-          "type": "Job",
+          "type": "cron.Job",
           "description": "The removed job."
         }
       ]
     },
     {
-      "name": "JobReturned",
+      "name": "cron.responses.JobReturned",
       "status": 200,
       "message": "The job has been returned.",
       "fields": [
         {
           "spec": "<job>",
-          "type": "Job",
+          "type": "cron.Job",
           "description": "The cron job."
         }
       ]
     },
     {
-      "name": "ValidationFailed",
+      "name": "cron.responses.JobScheduled",
+      "status": 201,
+      "message": "The job has been scheduled.",
+      "fields": [
+        {
+          "spec": "<job>",
+          "type": "cron.Job",
+          "description": "The scheduled job."
+        }
+      ]
+    },
+    {
+      "name": "cron.responses.JobUpdated",
+      "status": 200,
+      "message": "The job has been updated.",
+      "fields": [
+        {
+          "spec": "<job>",
+          "type": "cron.Job",
+          "description": "The updated job."
+        }
+      ]
+    },
+    {
+      "name": "cron.responses.JobsReturned",
+      "status": 200,
+      "message": "The jobs has been returned.",
+      "fields": [
+        {
+          "spec": "[jobs...]",
+          "type": "cron.Job"
+        }
+      ]
+    },
+    {
+      "name": "cron.responses.StatsReturned",
+      "status": 200,
+      "message": "The stats has been returned.",
+      "fields": [
+        {
+          "spec": "<stats>",
+          "type": "cron.Stats",
+          "description": "The scheduler stats."
+        }
+      ]
+    },
+    {
+      "name": "http.responses.ApiSpecReturned",
+      "status": 200,
+      "message": "The API spec has been returned.",
+      "fields": [
+        {
+          "spec": "<spec>",
+          "type": "http.ApiSpec"
+        }
+      ]
+    },
+    {
+      "name": "http.responses.ValidationFailed",
       "status": 400,
       "message": "One or more parameters are invalid.",
       "code": "error.model_validation_failed",
       "fields": [
         {
           "spec": "<violations...>",
-          "type": "Violation",
+          "type": "http.responses.ValidationFailed.Violation",
           "description": "The validation violations."
         }
       ]
@@ -207,18 +274,193 @@
   ],
   "models": [
     {
-      "name": "Api",
+      "name": "cron.Job",
+      "fields": [
+        {
+          "spec": "<id>",
+          "type": "string"
+        },
+        {
+          "spec": "<expr>",
+          "type": "string",
+          "description": "The cron expression."
+        },
+        {
+          "spec": "<command>",
+          "type": "string",
+          "description": "The command to run."
+        },
+        {
+          "spec": "[timezone]",
+          "type": "string",
+          "description": "The time zone."
+        },
+        {
+          "spec": "status",
+          "type": "string",
+          "description": "The job status.",
+          "constraints": [
+            {
+              "type": "choice",
+              "code": "error.invalid_choice",
+              "message": "The %{property.kind} '%{property.name}' is assigned to an invalid value '%{value}'. (Allowed: %{constraint.choiceValues.slice (0, 10).join (', ') + (constraint.choiceValues.length > 10 ? '...' : '')})",
+              "options": {
+                "choices": [
+                  "scheduled",
+                  "queued",
+                  "running"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "spec": "error",
+          "type": "string",
+          "description": "The error message."
+        },
+        {
+          "spec": "output",
+          "type": "string",
+          "description": "The command output."
+        },
+        {
+          "spec": "duration",
+          "type": "integer",
+          "description": "The time used for the last run."
+        },
+        {
+          "spec": "exitCode",
+          "type": "integer",
+          "description": "The last command exit code."
+        },
+        {
+          "spec": "nextRun",
+          "type": "string",
+          "description": "The local time of the next run."
+        },
+        {
+          "spec": "nextRunUtc",
+          "type": "date",
+          "description": "The UTC time of the next run."
+        },
+        {
+          "spec": "timeUntilNextRun",
+          "type": "integer",
+          "description": "The remaining time till the next run."
+        },
+        {
+          "spec": "timeUntilNextRunHumanized",
+          "type": "string",
+          "description": "The human readable duration of the remaining time till the next run."
+        }
+      ]
+    },
+    {
+      "name": "cron.Stats",
+      "fields": [
+        {
+          "spec": "running",
+          "type": "integer",
+          "description": "Number of running jobs."
+        },
+        {
+          "spec": "queued",
+          "type": "integer",
+          "description": "Number of queued jobs."
+        },
+        {
+          "spec": "scheduled",
+          "type": "integer",
+          "description": "Number of scheduled jobs."
+        },
+        {
+          "spec": "taskQueue",
+          "type": "cron.Stats.TaskQueueStats",
+          "description": "The task queue stats."
+        },
+        {
+          "spec": "pool",
+          "type": "cron.Stats.PoolStats",
+          "description": "The database pool stats."
+        }
+      ]
+    },
+    {
+      "name": "cron.Stats.PoolStats",
+      "fields": [
+        {
+          "spec": "id",
+          "type": "string",
+          "description": "The database pool ID."
+        },
+        {
+          "spec": "total",
+          "type": "integer",
+          "description": "Number of total clients."
+        },
+        {
+          "spec": "waiting",
+          "type": "integer",
+          "description": "Number of waiting clients."
+        },
+        {
+          "spec": "idle",
+          "type": "integer",
+          "description": "Number of idle clients."
+        },
+        {
+          "spec": "size",
+          "type": "integer",
+          "description": "The pool size."
+        }
+      ]
+    },
+    {
+      "name": "cron.Stats.TaskQueueStats",
+      "fields": [
+        {
+          "spec": "pending",
+          "type": "integer",
+          "description": "Number of pending tasks."
+        },
+        {
+          "spec": "queued",
+          "type": "integer",
+          "description": "Number of queued tasks."
+        }
+      ]
+    },
+    {
+      "name": "http.ApiSpec",
+      "fields": [
+        {
+          "spec": "apis...",
+          "type": "http.ApiSpec.Api"
+        },
+        {
+          "spec": "responses...",
+          "type": "http.ApiSpec.Response"
+        },
+        {
+          "spec": "models...",
+          "type": "http.ApiSpec.Model"
+        }
+      ]
+    },
+    {
+      "name": "http.ApiSpec.Api",
       "fields": [
         {
           "spec": "<name>",
           "type": "string"
         },
         {
-          "spec": "[method]",
+          "spec": "[requestMethod]",
           "type": "string?"
         },
         {
-          "spec": "[path]",
+          "spec": "[requestPath]",
           "type": "string?"
         },
         {
@@ -227,7 +469,7 @@
         },
         {
           "spec": "request",
-          "type": "Request"
+          "type": "http.ApiSpec.Request?"
         },
         {
           "spec": "responses...",
@@ -236,24 +478,7 @@
       ]
     },
     {
-      "name": "ApiSpec",
-      "fields": [
-        {
-          "spec": "apis...",
-          "type": "Api"
-        },
-        {
-          "spec": "responses...",
-          "type": "Response"
-        },
-        {
-          "spec": "models...",
-          "type": "Model"
-        }
-      ]
-    },
-    {
-      "name": "Constraint",
+      "name": "http.ApiSpec.Constraint",
       "fields": [
         {
           "spec": "<type>",
@@ -282,7 +507,7 @@
       ]
     },
     {
-      "name": "Field",
+      "name": "http.ApiSpec.Field",
       "fields": [
         {
           "spec": "<spec>",
@@ -302,81 +527,12 @@
         },
         {
           "spec": "constraints...",
-          "type": "Constraint?"
+          "type": "http.ApiSpec.Constraint?"
         }
       ]
     },
     {
-      "name": "Job",
-      "fields": [
-        {
-          "spec": "<id>",
-          "type": "integer",
-          "description": "The job ID."
-        },
-        {
-          "spec": "<expr>",
-          "type": "string",
-          "description": "The cron expression."
-        },
-        {
-          "spec": "<command>",
-          "type": "string",
-          "description": "The command to run."
-        },
-        {
-          "spec": "<timezone>",
-          "type": "string",
-          "description": "The time zone.",
-          "constraints": [
-            {
-              "type": "timezone",
-              "code": "error.invalid_timezone",
-              "message": "The timezone '%{value}' is invalid."
-            }
-          ]
-        },
-        {
-          "spec": "shell",
-          "type": "boolean|string",
-          "description": "Use shell to run the command.",
-          "defval": true
-        },
-        {
-          "spec": "env",
-          "type": "object?",
-          "description": "Additional environment variables"
-        },
-        {
-          "spec": "nextRun",
-          "type": "string",
-          "description": "The local time of the next run."
-        },
-        {
-          "spec": "nextRunUtc",
-          "type": "string",
-          "description": "The UTC time of the next run."
-        },
-        {
-          "spec": "timeUntilNextRun",
-          "type": "integer",
-          "description": "The remaining time till the next run."
-        },
-        {
-          "spec": "timeUntilNextRunHumanized",
-          "type": "string",
-          "description": "The human readable duration of the remaining time till the next run."
-        },
-        {
-          "spec": "lastExitCode",
-          "type": "integer",
-          "description": "The exit code of the last run.",
-          "defval": -1
-        }
-      ]
-    },
-    {
-      "name": "Model",
+      "name": "http.ApiSpec.Model",
       "fields": [
         {
           "spec": "<name>",
@@ -385,13 +541,13 @@
         },
         {
           "spec": "fields...",
-          "type": "Field?",
+          "type": "http.ApiSpec.Field?",
           "description": "The model fields."
         }
       ]
     },
     {
-      "name": "Parameter",
+      "name": "http.ApiSpec.Parameter",
       "fields": [
         {
           "spec": "<spec>",
@@ -419,21 +575,21 @@
         },
         {
           "spec": "constraints...",
-          "type": "Constraint?"
+          "type": "http.ApiSpec.Constraint?"
         }
       ]
     },
     {
-      "name": "Request",
+      "name": "http.ApiSpec.Request",
       "fields": [
         {
           "spec": "parameters...",
-          "type": "Parameter?"
+          "type": "http.ApiSpec.Parameter?"
         }
       ]
     },
     {
-      "name": "Response",
+      "name": "http.ApiSpec.Response",
       "fields": [
         {
           "spec": "<name>",
@@ -457,13 +613,13 @@
         },
         {
           "spec": "fields...",
-          "type": "Field?",
+          "type": "http.ApiSpec.Field?",
           "description": "The response fields."
         }
       ]
     },
     {
-      "name": "Violation",
+      "name": "http.responses.ValidationFailed.Violation",
       "fields": [
         {
           "spec": "field",
