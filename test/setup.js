@@ -13,6 +13,23 @@ nit.test.Strategy
     .memo ("uuid1", () => "11111111-1111-1111-1111-111111111111")
     .memo ("time1", () => new Date (2024, 0, 17, 15, 30))
     .memo ("timezone1", () => "America/Indianapolis")
+    .method ("setupTestForApi", function ()
+    {
+        return this
+            .useMockDatabase ()
+            .before (s => s.cronServer = nit.new ("cron.Server", { db: s.db }))
+            .before (s => s.context.registerService (s.cronServer))
+            .before (s => s.context.registerService (s.db))
+            .before (s => s.context.server = new nit.new ("http.Server"))
+            .before (s => s.cronServer.start ())
+            .mock ("db", "disconnect")
+            .mock (nit, "timezone", function () { return this.strategy.timezone1; })
+            .down (s => s.mocks[0].restore ())
+            .down (s => s.cronServer.stop ())
+            .down (s => s.db.disconnect ())
+            .snapshot ()
+        ;
+    })
     .method ("expectingResultJsonToBe", function (json, ...otherProperties)
     {
         let self = this;
