@@ -60,7 +60,7 @@ test.method ("cron.models.Job", "update")
         .returnsResultOfExpr ("object")
         .expectingPropertyToBe ("db.client.statement", nit.trim.text`
             UPDATE "cron_jobs"
-            SET "nextRun" = '2024-02-13T00:00:00.000', "status" = 'running', "mtime" = '2024-02-12T17:20:00.000Z', "nextRunUtc" = '2024-02-13T00:00:00.000Z'
+            SET "status" = 'running', "nextRun" = '2024-02-13T00:00:00.000', "mtime" = '2024-02-12T17:20:00.000Z', "nextRunUtc" = '2024-02-13T00:00:00.000Z'
             WHERE "id" = '11111111-1111-1111-1111-111111111111'
         `)
         .commit ()

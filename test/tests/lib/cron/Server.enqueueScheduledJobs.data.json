@@ -255,7 +255,7 @@
             }
         },
         {
-            "statement": "INSERT INTO \"cron_jobs\" (\"id\", \"expr\", \"command\", \"timezone\", \"status\", \"error\", \"output\", \"duration\", \"exitCode\", \"nextRun\", \"nextRunUtc\", \"mtime\")\nVALUES ('aa69a37c-811a-4537-b3da-88b7af70be1c', '0 0 * * *', 'shell echo ''test''', 'America/Indianapolis', 'scheduled', '', '', '0', '0', '2024-01-20T00:00:00.000-05:00', '2024-01-20T05:00:00.000Z', '2024-01-17T20:30:00.000Z')",
+            "statement": "INSERT INTO \"cron_jobs\" (\"id\", \"expr\", \"command\", \"timezone\", \"status\", \"error\", \"output\", \"duration\", \"exitCode\", \"nextRun\", \"nextRunUtc\", \"mtime\")\nVALUES ('aa69a37c-811a-4537-b3da-88b7af70be1c', '0 0 * * *', 'shell echo ''test''', 'America/Indianapolis', 'scheduled', '', '', '0', '0', '2024-01-18T00:00:00.000-05:00', '2024-01-18T05:00:00.000Z', '2024-01-17T20:30:00.000Z')",
             "result": {
                 "command": "INSERT",
                 "rows": [],
@@ -268,7 +268,7 @@
             "result": {
                 "command": "UPDATE",
                 "rows": [],
-                "rowCount": 0,
+                "rowCount": 1,
                 "fields": []
             }
         },

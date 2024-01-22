@@ -130,6 +130,10 @@ test.method ("cron.Server", "runJob")
         .mock ("object", "updateEnqueueTimer")
         .mock ("db", "disconnect")
         .mock ("TimestampUpdater.prototype", "perform")
+        .mock (Date, "now", function ()
+        {
+            return this.strategy.time1.getTime ();
+        })
         .given ("aa69a37c-811a-4537-b3da-88b7af70be1c")
         .before (s => s.object.start ())
         .before (s =>
@@ -204,6 +208,10 @@ test.method ("cron.Server", "enqueueScheduledJobs")
         })
         .mock ("object", "dequeue")
         .mock ("db", "disconnect")
+        .mock (Date, "now", function ()
+        {
+            return this.strategy.time1.getTime ();
+        })
         .given ("aa69a37c-811a-4537-b3da-88b7af70be1c")
         .before (s => s.object.start ())
         .before (s =>
