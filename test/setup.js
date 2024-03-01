@@ -1,12 +1,6 @@
-const POSTGRESQL_TEST_DIR = nit.path.join (nit.HOME, "packages/postgresql/test");
-
-nit.require ("http.Server").defaults ("stopTimeout", 0);
-nit.test.Strategy.Project.resetDirs ();
-nit.ASSET_PATHS.push (POSTGRESQL_TEST_DIR);
-["setup.js", "setup.local.js"].forEach (f => nit.require (nit.path.join (POSTGRESQL_TEST_DIR, f)));
-
-
 nit.test.Strategy
+    .addSetupFilesForPackage ("postgresql")
+    .do (() => nit.require ("http.Server").defaults ("stopTimeout", 0))
     .memo ("cron", true, false, () => nit.require ("cron"))
     .memo ("Server", true, false, () => nit.require ("cron.Server"))
     .memo ("Query", true, false, () => nit.require ("postgresql.Query"))
